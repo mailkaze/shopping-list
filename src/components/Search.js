@@ -1,9 +1,20 @@
-import React from 'react'
+import React, {useState} from 'react'
 
 export const Search = () => {
+
+    const [search, setSearch] = useState('')
+
+    const handleChange = e => {
+        setSearch(e.target.value)
+    }
+
     return (
-        <div>
-            
-        </div>
+        <input 
+            type="text"
+            onChange={handleChange}
+            placeholder="Search elements ..."
+            value={search}
+            autoFocus
+        />
     )
 }

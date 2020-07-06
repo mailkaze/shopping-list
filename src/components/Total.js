@@ -1,9 +1,12 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 
-export const Total = () => {
+export const Total = props => {
+    useEffect(() => {
+        props.calculateTotal()
+    },[])
     return (
         <div>
-            <p>Total: </p>
+            <p>Total: Bs.{props.total}</p>
         </div>
     )
 }

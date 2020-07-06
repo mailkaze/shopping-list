@@ -1,19 +1,46 @@
-import React, {useState} from 'react'
+import React, { useState, useEffect } from 'react'
 import {db} from '../firebase'
+import './form.css'
 
 export const Form = props => {
-
-    const [element, setElement] = useState({})
+    const initialElement = {
+        name: '',
+        price: '',
+        marked: false,
+        quantity: 1
+    }
+    const [element, setElement] = useState(initialElement)
 
     const handleSubmit = async e => {
         e.preventDefault()
-        console.log('enviar:', element)
-        await db.collection('shoppingElements').doc().set({...element, marked: false})
+        if (props.currentId === '') { //crear nuevo elemento
+            await db.collection('shoppingElements').doc().set(element)
+        } else { // Editar elemento
+            await db.collection('shoppingElements').doc(props.currentId).update(element)
+        }
+        
+        props.setCurrentId('')
+        setElement(initialElement)
+        props.setShowForm(false)
     }
 
     const handleChange = e => {
         setElement({...element, [e.target.name]: e.target.value})
     }
+
+    const getElement = async id => {
+        const doc = await db.collection('shoppingElements').doc(id).get()
+        setElement({...doc.data()})
+    }
+
+    useEffect(() => {
+        if (props.currentId === '') {
+            setElement({...initialElement})
+        } else {
+            getElement(props.currentId)
+        }
+        
+    }, [props.currentId])
 
     return (
         <form onSubmit={handleSubmit}>
@@ -21,11 +48,17 @@ export const Form = props => {
                 type="text"
                 name="name"
                 onChange={handleChange}
+                value={element.name}
+                placeholder="Nombre ..."
+                autoFocus
             />
             <input 
                 type="number"
+                step="0.01"
                 name="price"
                 onChange={handleChange}
+                value={element.price}
+                placeholder="Precio ..."
             />
             <input type="submit" value="Save"/>
         </form>

@@ -1,0 +1,35 @@
+.card {
+    background: #fefae0;
+    margin: auto;
+    margin-top: 2px;
+    width: 90%;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-direction: row;
+    padding: 10px;
+    border: none;
+    box-shadow: 1px 1px 3px rgba(0,0,0,.6);
+}
+
+.card .content > *{
+    display: inline-block;
+    margin-right: 5px;
+}
+
+.content #checkbox {
+    transform: scale(1.3);
+    cursor: pointer;
+}
+
+.content #quantity {
+    width: 40px;
+}
+
+
+
+.card .buttons > *{
+    display: inline-block;
+    margin-right: 10px;
+    cursor: pointer;
+}

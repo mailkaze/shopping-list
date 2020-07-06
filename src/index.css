@@ -1,8 +1,13 @@
 body {
     font-family: 'Roboto', sans-serif;
+    background: #fca311;
+    color: #14213d;
 }
 
-.card > * {
-    display: inline-block;
-    margin-right: 5px;
+.container {
+    width: 90%;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }

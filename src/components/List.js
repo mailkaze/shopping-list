@@ -12,6 +12,11 @@ export const List = props => {
               element={element}  
               key={element.id} 
               toggleMarked={props.toggleMarked}
+              deleteElement={props.deleteElement}
+              setCurrentId={props.setCurrentId}
+              setShowForm={props.setShowForm}
+              updateQuantity={props.updateQuantity}
+              calculateTotal={props.calculateTotal}
             /> )
       }
     </>

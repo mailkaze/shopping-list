@@ -33,6 +33,10 @@ export const Form = props => {
         setElement({...doc.data()})
     }
 
+    const handleClose = () => {
+        props.setShowForm(false)
+    }
+
     useEffect(() => {
         if (props.currentId === '') {
             setElement({...initialElement})
@@ -44,23 +48,32 @@ export const Form = props => {
 
     return (
         <form onSubmit={handleSubmit}>
-            <input 
-                type="text"
-                name="name"
-                onChange={handleChange}
-                value={element.name}
-                placeholder="Nombre ..."
-                autoFocus
-            />
-            <input 
-                type="number"
-                step="0.01"
-                name="price"
-                onChange={handleChange}
-                value={element.price}
-                placeholder="Precio ..."
-            />
-            <input type="submit" value="Save"/>
+             <i className="fas fa-times" onClick={handleClose} ></i>
+            <div className="form-content">
+                <input 
+                    id="name"
+                    type="text"
+                    name="name"
+                    onChange={handleChange}
+                    value={element.name}
+                    placeholder="Nombre ..."
+                    autoFocus
+                />
+                <div className="down">
+                    <input 
+                        id="price"
+                        type="number"
+                        step="0.01"
+                        name="price"
+                        onChange={handleChange}
+                        value={element.price}
+                        placeholder="Precio ..."
+                    />
+                    <input type="submit" value="Guardar" id="save"/>
+                </div>
+            </div>
+            
+            
         </form>
     )
 }

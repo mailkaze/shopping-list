@@ -31,7 +31,6 @@ export const Element = (props) => {
         setQuantity(1)
         props.updateQuantity(1, id)
       }
-      props.calculateTotal()
     }
   };
 

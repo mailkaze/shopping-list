@@ -1,4 +1,5 @@
 import React, {useState} from 'react'
+import './search.css'
 
 export const Search = () => {
 
@@ -9,12 +10,17 @@ export const Search = () => {
     }
 
     return (
-        <input 
-            type="text"
-            onChange={handleChange}
-            placeholder="Search elements ..."
-            value={search}
-            autoFocus
-        />
+        <div class="search">
+            <input 
+                id="search"
+                type="text"
+                onChange={handleChange}
+                placeholder="Search elements ..."
+                value={search}
+                autoFocus
+            />
+            <i class="fas fa-search"></i>
+        </div>
+        
     )
 }

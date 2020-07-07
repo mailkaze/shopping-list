@@ -22,14 +22,19 @@
     cursor: pointer;
 }
 
+.content p {
+    margin-bottom: 0;
+}
+
 .content #quantity {
     width: 40px;
 }
 
-
-
 .card .buttons > *{
     display: inline-block;
-    margin-right: 10px;
     cursor: pointer;
+}
+
+.fa-pen {
+    margin-right: 10px;
 }

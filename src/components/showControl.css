@@ -1,0 +1,13 @@
+.show-control {
+    margin: 10px 0 6px;
+}
+
+.show-control i {
+    font-size: 1.2em;
+    cursor: pointer;
+    margin-right: 5px;
+}
+
+.show-control span {
+    font-weight: 700;
+}

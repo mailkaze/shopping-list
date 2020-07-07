@@ -1,15 +1,45 @@
 form {
-    position: absolute;
+    width: 60vw;
+    position: fixed;
     background: #fefae0;
-    padding: 20px;
-    left: 30vw;
+    left: 18vw;
     top: 20vh;
-    display: flex;
-    flex-direction: column;
     border-radius: 8px;
     box-shadow: 1px 1px 3px rgba(0,0,0,.6);
 }
 
-form > * {
-    margin: 5px;
+.form-content {
+    margin: 3px;
+    padding: 26px 20px 14px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+form .fa-times {
+    position: absolute;
+    right: 10px;
+    top: 5px;
+    cursor: pointer;
+    font-size: 1.2em;
+    z-index: 100;
+}
+
+#name {
+    width: 100%;
+    margin-bottom: 3px;
+}
+
+.down {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.down #price {
+    width: 59%;
+}
+
+.down #save {
+    width: 39%;
 }

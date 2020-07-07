@@ -57,6 +57,10 @@ function App() {
     console.log(t)
     setTotal(t)
   }
+  
+  useEffect(() => {
+    calculateTotal()
+  }, [elements])
 
   useEffect(() => {
     getElements();
@@ -66,6 +70,7 @@ function App() {
     <>
       <div className="container">
         <Search />
+        <Total total={total}/>
         <List 
           elements={elements} 
           marked={false} 
@@ -74,7 +79,6 @@ function App() {
           setCurrentId={setCurrentId}
           setShowForm={setShowForm}
           updateQuantity={updateQuantity}
-          calculateTotal={calculateTotal}
         />
         <ShowControl 
           showMarked={showMarked} 
@@ -89,10 +93,8 @@ function App() {
             setCurrentId={setCurrentId}
             setShowForm={setShowForm}
             updateQuantity={updateQuantity}
-            calculateTotal={calculateTotal}
           />
         )}
-        <Total total={total} calculateTotal={calculateTotal} />
       </div>
       {
         showForm && <Form 

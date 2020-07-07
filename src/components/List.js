@@ -16,7 +16,6 @@ export const List = props => {
               setCurrentId={props.setCurrentId}
               setShowForm={props.setShowForm}
               updateQuantity={props.updateQuantity}
-              calculateTotal={props.calculateTotal}
             /> )
       }
     </>

@@ -13,6 +13,7 @@ function App() {
   const [currentId, setCurrentId] = useState('')
   const [showForm, setShowForm] = useState(false)
   const [total, setTotal] = useState(0)
+  const [search, setSearch] = useState('')
 
 
   const getElements = () => {
@@ -27,6 +28,7 @@ function App() {
   };
 
   const toggleMarked = async (id) => {
+    console.log(id)
     const res = await db.collection("shoppingElements").doc(id).get();
     const data = res.data();
     await db
@@ -54,7 +56,6 @@ function App() {
     elements
     .filter(e => !e.marked)
     .map(e => t += (parseFloat(e.price) * parseFloat(e.quantity)))
-    console.log(t)
     setTotal(t)
   }
   
@@ -69,7 +70,10 @@ function App() {
   return (
     <>
       <div className="container">
-        <Search />
+        <Search 
+          search={search}
+          setSearch={setSearch}
+        />
         <Total total={total}/>
         <List 
           elements={elements} 
@@ -79,6 +83,7 @@ function App() {
           setCurrentId={setCurrentId}
           setShowForm={setShowForm}
           updateQuantity={updateQuantity}
+          search={search}
         />
         <ShowControl 
           showMarked={showMarked} 
@@ -93,6 +98,7 @@ function App() {
             setCurrentId={setCurrentId}
             setShowForm={setShowForm}
             updateQuantity={updateQuantity}
+            search={search}
           />
         )}
       </div>

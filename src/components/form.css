@@ -27,7 +27,7 @@ form .fa-times {
 
 #name {
     width: 100%;
-    margin-bottom: 3px;
+    margin-bottom: 5px;
 }
 
 .down {
@@ -37,9 +37,9 @@ form .fa-times {
 }
 
 .down #price {
-    width: 59%;
+    width: 49%;
 }
 
 .down #save {
-    width: 39%;
+    width: 49%;
 }

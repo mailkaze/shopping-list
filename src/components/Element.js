@@ -3,6 +3,7 @@ import './element.css'
 
 export const Element = (props) => {
   const [quantity, setQuantity] = useState(1);
+  const [showButtons, setShowButtons] = useState(false)
 
   useEffect(() => {
     setQuantity(props.element.quantity);
@@ -37,15 +38,29 @@ export const Element = (props) => {
   return (
     <div className="card">
       <div className="content">
+        <label htmlFor={"checkbox" + props.element.id}>
+          {
+            props.element.marked
+            ? <i className="fas fa-check"></i>
+            : <i className="far fa-square"></i>
+          }
+        </label>
         <input
           type="checkbox"
           name="checkbox"
-          id="checkbox"
+          className="checkbox"
+          id={"checkbox" + props.element.id}
           checked={props.element.marked}
-          onChange={() => props.toggleMarked(props.element.id)}
+          onChange={() => {
+            console.log(props.element.name)
+            console.log(props.element.id)
+            props.toggleMarked(props.element.id)
+            }
+          }
         />
-        <p>{props.element.name}</p>
+        <p>{props.element.name} X </p>
         <input
+          className="form-control"
           id="quantity"
           type="number"
           name="quantity"
@@ -56,16 +71,21 @@ export const Element = (props) => {
         />
         <p>Bs.{Intl.NumberFormat().format(props.element.price * quantity)}</p>
       </div>
-      <div className="buttons">
-        <i
-          className="fas fa-pen"
-          onClick={() => handleEdit(props.element.id)}
-        ></i>
-        <i
-          className="fas fa-trash"
-          onClick={() => handleDelete(props.element.id)}
-        ></i>
-      </div>
+      <i className="fas fa-ellipsis-v" onClick={() => setShowButtons(!showButtons)}></i>
+      {
+        showButtons && (
+          <div className="buttons">
+            <i
+              className="fas fa-pen"
+              onClick={() => handleEdit(props.element.id)}
+            ></i>
+            <i
+              className="fas fa-trash"
+              onClick={() => handleDelete(props.element.id)}
+            ></i>
+          </div>
+        )
+      }
     </div>
   );
 };

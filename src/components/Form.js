@@ -34,6 +34,7 @@ export const Form = props => {
     }
 
     const handleClose = () => {
+        props.setCurrentId('');
         props.setShowForm(false)
     }
 
@@ -57,6 +58,7 @@ export const Form = props => {
                     onChange={handleChange}
                     value={element.name}
                     placeholder="Nombre ..."
+                    className="form-control"
                     autoFocus
                 />
                 <div className="down">
@@ -65,11 +67,17 @@ export const Form = props => {
                         type="number"
                         step="0.01"
                         name="price"
+                        className="form-control"
                         onChange={handleChange}
                         value={element.price}
                         placeholder="Precio ..."
                     />
-                    <input type="submit" value="Guardar" id="save"/>
+                    <input 
+                        type="submit" 
+                        value="Guardar" 
+                        id="save"
+                        className="btn btn-primary"
+                    />
                 </div>
             </div>
             

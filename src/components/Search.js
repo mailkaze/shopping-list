@@ -1,26 +1,26 @@
-import React, {useState} from 'react'
-import './search.css'
+import React from "react";
+import "./search.css";
 
-export const Search = () => {
+export const Search = (props) => {
+  const handleChange = (e) => {
+    props.setSearch(e.target.value);
+  };
 
-    const [search, setSearch] = useState('')
+  const clearSearch = () => {
+    props.setSearch("");
+  };
 
-    const handleChange = e => {
-        setSearch(e.target.value)
-    }
-
-    return (
-        <div class="search">
-            <input 
-                id="search"
-                type="text"
-                onChange={handleChange}
-                placeholder="Search elements ..."
-                value={search}
-                autoFocus
-            />
-            <i class="fas fa-search"></i>
-        </div>
-        
-    )
-}
+  return (
+    <div className="search">
+      <input
+        id="search"
+        type="text"
+        onChange={handleChange}
+        placeholder="Buscar ..."
+        value={props.search}
+        autoFocus
+      />
+      {props.search && <i className="fas fa-times" onClick={clearSearch}></i>}
+    </div>
+  );
+};

@@ -5,8 +5,9 @@ body {
 }
 
 .container {
-    width: 98%;
-    margin: auto;
+    width: 94%;
+    padding: 0;
+    margin: 0 auto;
     display: flex;
     flex-direction: column;
     align-items: center;

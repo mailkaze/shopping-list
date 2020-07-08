@@ -5,7 +5,7 @@ export const Total = props => {
 
     return (
         <div className="total">
-            <p>Total: Bs {props.total}</p>
+            <p>Total: Bs {Intl.NumberFormat().format(props.total.toFixed(2))}</p>
         </div>
     )
 }

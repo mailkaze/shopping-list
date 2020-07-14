@@ -18,7 +18,7 @@ function App() {
 
   const getElements = () => {
     try {
-      db.colllection("shoppingElements").onSnapshot((querySnapshot) => {
+      db.collection("shoppingElements").onSnapshot((querySnapshot) => {
         const docs = [];
         querySnapshot.forEach((doc) => {
           docs.push({ ...doc.data(), id: doc.id });

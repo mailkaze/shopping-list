@@ -17,24 +17,46 @@ function App() {
 
 
   const getElements = () => {
-    db.collection("shoppingElements").onSnapshot((querySnapshot) => {
-      const docs = [];
-      querySnapshot.forEach((doc) => {
-        docs.push({ ...doc.data(), id: doc.id });
+    try {
+      db.collection("shoppingElements").onSnapshot((querySnapshot) => {
+        const docs = [];
+        querySnapshot.forEach((doc) => {
+          docs.push({ ...doc.data(), id: doc.id });
+        });
+        setElements(docs);
       });
-      setElements(docs);
-    });
+    } catch (error) {
+     
+      let localElements = localStorage.getItem('shoppingElements')
+      if (localElements != null) {
+        console.log('Error de red, se utilizarán datos locales, puede que no estén actualizados.')
+        setElements(JSON.parse(localElements))
+      } else {
+        alert('Error de red, no se pudo conectar con la base de datos, revise su conexión.')
+      }
+    }
+    
     
   };
 
   const toggleMarked = async (id) => {
     console.log(id)
-    const res = await db.collection("shoppingElements").doc(id).get();
-    const data = res.data();
-    await db
-      .collection("shoppingElements")
-      .doc(id)
-      .update({ ...data, marked: !data.marked });
+    try {
+      const res = await db.collection("shoppingElements").doc(id).get();
+      const data = res.data();
+      await db.collection("shoppingElements").doc(id).update({ ...data, marked: !data.marked });
+    } catch (e) {
+      console.log('no se pudo cambiar el marcado en la DB, se hará en local')
+      let localElements = localStorage.getItem('shoppingElements')
+      if (localElements != null) {
+        localElements = JSON.parse(localElements)
+        const i = localElements.findIndex(e => e.id === id)
+        localElements[i].marked = !localElements[i].marked
+        localStorage.setItem('shoppingElements', JSON.stringify(localElements))
+        setElements(localElements)
+
+      }
+    }
   };
 
   const toggleShow = () => {
@@ -61,6 +83,9 @@ function App() {
   
   useEffect(() => {
     calculateTotal()
+    if (elements.length > 0) {
+      localStorage.setItem('shoppingElements', JSON.stringify(elements))
+    }
   }, [elements])
 
   useEffect(() => {

@@ -18,7 +18,7 @@ function App() {
 
   const getElements = () => {
     try {
-      db.collection("shoppingElements").onSnapshot((querySnapshot) => {
+      db.colllection("shoppingElements").onSnapshot((querySnapshot) => {
         const docs = [];
         querySnapshot.forEach((doc) => {
           docs.push({ ...doc.data(), id: doc.id });
@@ -29,7 +29,7 @@ function App() {
      
       let localElements = localStorage.getItem('shoppingElements')
       if (localElements != null) {
-        console.log('Error de red, se utilizarán datos locales, puede que no estén actualizados.')
+        alert('Error de red, se utilizarán datos locales, puede que no estén actualizados.')
         setElements(JSON.parse(localElements))
       } else {
         alert('Error de red, no se pudo conectar con la base de datos, revise su conexión.')

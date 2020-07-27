@@ -6,15 +6,17 @@ import { Total } from "./components/Total";
 import { Form } from "./components/Form";
 import { AddButton } from "./components/AddButton";
 import { db } from "./firebase";
+import { useSelector, useDispatch} from 'react-redux'
+import { setElements, setShowMarked, setTotal } from './redux/actions'
 
 function App() {
-  const [elements, setElements] = useState([]);
-  const [showMarked, setShowMarked] = useState(true);
-  const [currentId, setCurrentId] = useState('')
-  const [showForm, setShowForm] = useState(false)
-  const [total, setTotal] = useState(0)
-  const [search, setSearch] = useState('')
-
+  const elements = useSelector(state => state.elements)
+  const showMarked = useSelector(state => state.showMarked)
+  const currentId = useSelector(state => state.currentId)
+  const showForm = useSelector(state => state.showForm)
+  const total = useSelector(state => state.total)
+  const search = useSelector(state => state.search)
+  const dispatch = useDispatch()
 
   const getElements = () => {
     try {
@@ -23,14 +25,14 @@ function App() {
         querySnapshot.forEach((doc) => {
           docs.push({ ...doc.data(), id: doc.id });
         });
-        setElements(docs);
+        dispatch(setElements(docs))
       });
     } catch (error) {
      
       let localElements = localStorage.getItem('shoppingElements')
       if (localElements != null) {
         alert('Error de red, se utilizarán datos locales, puede que no estén actualizados.')
-        setElements(JSON.parse(localElements))
+        dispatch(setElements(JSON.parse(localElements)))
       } else {
         alert('Error de red, no se pudo conectar con la base de datos, revise su conexión.')
       }
@@ -53,14 +55,14 @@ function App() {
         const i = localElements.findIndex(e => e.id === id)
         localElements[i].marked = !localElements[i].marked
         localStorage.setItem('shoppingElements', JSON.stringify(localElements))
-        setElements(localElements)
+        dispatch(setElements(localElements))
 
       }
     }
   };
 
   const toggleShow = () => {
-    setShowMarked(!showMarked);
+    dispatch(setShowMarked(!showMarked))
   };
 
   const deleteElement = async id => {
@@ -78,7 +80,7 @@ function App() {
     elements
     .filter(e => !e.marked)
     .map(e => t += (parseFloat(e.price) * parseFloat(e.quantity)))
-    setTotal(t)
+    dispatch(setTotal(t))
   }
   
   useEffect(() => {
@@ -97,7 +99,7 @@ function App() {
       <div className="container">
         <Search 
           search={search}
-          setSearch={setSearch}
+          // setSearch={setSearch}
         />
         <Total total={total}/>
         <List 
@@ -105,8 +107,8 @@ function App() {
           marked={false} 
           toggleMarked={toggleMarked} 
           deleteElement={deleteElement}
-          setCurrentId={setCurrentId}
-          setShowForm={setShowForm}
+          // setCurrentId={setCurrentId}
+          // setShowForm={setShowForm}
           updateQuantity={updateQuantity}
           search={search}
         />
@@ -120,8 +122,8 @@ function App() {
             marked={true} 
             toggleMarked={toggleMarked} 
             deleteElement={deleteElement}
-            setCurrentId={setCurrentId}
-            setShowForm={setShowForm}
+            // setCurrentId={setCurrentId}
+            // setShowForm={setShowForm}
             updateQuantity={updateQuantity}
             search={search}
           />
@@ -130,12 +132,14 @@ function App() {
       {
         showForm && <Form 
           currentId={currentId} 
-          setCurrentId={setCurrentId}
-          setShowForm={setShowForm} 
+          // setCurrentId={setCurrentId}
+          // setShowForm={setShowForm} 
         />
       }
       {
-        !showForm && <AddButton setShowForm={setShowForm}/>
+        !showForm && <AddButton
+          // setShowForm={setShowForm}
+        />
       }
     </>
   );

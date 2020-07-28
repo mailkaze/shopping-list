@@ -1,15 +1,31 @@
 import React from "react";
-import './showControl.css'
+import styled from 'styled-components'
+import { useSelector, useDispatch } from 'react-redux'
+import { setShowMarked } from '../redux/actions'
 
-export const ShowControl = (props) => {
+const ShowControlStyled = styled.div`
+  margin: 10px 0 6px;
+  i {
+    font-size: 1.2em;
+    cursor: pointer;
+    margin-right: 5px;
+  }
+  span {
+    font-weight: 700;
+  }
+`
+
+export const ShowControl = () => {
+  const showMarked = useSelector(state => state.showMarked)
+  const dispatch = useDispatch()
   return (
-    <div className="show-control">
-      {props.showMarked ? (
-        <i className="fas fa-chevron-down" onClick={props.toggleShow}></i>
+    <ShowControlStyled className="show-control">
+      {showMarked ? (
+        <i className="fas fa-chevron-down" onClick={() => dispatch(setShowMarked())}></i>
       ) : (
-        <i className="fas fa-chevron-right" onClick={props.toggleShow}></i>
+        <i className="fas fa-chevron-right" onClick={() => dispatch(setShowMarked())}></i>
       )}
       <span>Mostrar elementos marcados</span>
-    </div>
+    </ShowControlStyled>
   );
 };

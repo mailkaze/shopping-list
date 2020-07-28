@@ -5,10 +5,9 @@ export function setElements(elements) {
   }
 }
 
-export function setShowMarked(showMarked) {
+export function setShowMarked() {
   return {
     type: 'SET_SHOW_MARKED',
-    payload: showMarked
   }
 }
 export function setCurrentId(currentId) {
@@ -21,14 +20,6 @@ export function setCurrentId(currentId) {
 export function setShowForm(showForm) {
   return {
     type: 'SET_SHOW_FORM',
-    payload: showForm
-  }
-}
-
-export function setTotal(total) {
-  return {
-    type: 'SET_TOTAL',
-    payload: total
   }
 }
 

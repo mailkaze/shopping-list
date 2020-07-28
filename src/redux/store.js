@@ -3,11 +3,10 @@ import reducer from './reducers'
 
 const initialState = {
   elements: [],
-  showMarked: true,
-  currentId: '',
-  showForm: false,
-  total: 0,
   search: '',
+  currentId: '',
+  showMarked: true,
+  showForm: false,
 }
 
 export default createStore(reducer, initialState)

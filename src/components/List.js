@@ -1,34 +1,32 @@
 import React from 'react'
 import {Element} from './Element'
+import { useSelector } from 'react-redux'
 
-export const List = props => {
+
+export const List = ({ marked }) => {
+  const elements = useSelector(state => state.elements)
+  const search = useSelector(state => state.search)
 
   const filterSearch = () => {
-    if (props.search) {
-      const search = props.search.toLowerCase().trim()
-      return props.elements.filter(e => 
-        e.name.toLowerCase().includes(search))
+    if (search) {
+      return elements.filter(e => 
+        e.name.toLowerCase().includes(search.toLowerCase().trim()))
     } else {
-      return props.elements
+      return elements
     }
   }
 
   return (
     <>
       {
-          // props.elements
-          filterSearch()
-          .filter(e => e.marked === props.marked)
-          .map(element => 
-            <Element 
-              element={element}  
-              key={element.id} 
-              toggleMarked={props.toggleMarked}
-              deleteElement={props.deleteElement}
-              setCurrentId={props.setCurrentId}
-              setShowForm={props.setShowForm}
-              updateQuantity={props.updateQuantity}
-            /> )
+        filterSearch()
+        .filter(e => e.marked === marked)
+        .map(element => 
+          <Element 
+            element={element}  
+            key={element.id} 
+          /> 
+        )
       }
     </>
   )

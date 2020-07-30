@@ -10,6 +10,10 @@ export default function reducer(state, action) {
       return {...state, showForm: !state.showForm}
     case 'SET_SEARCH':
       return {...state, search: action.payload}
+    case 'EDIT_ELEMENT':
+      const tempElements = state.elements
+      .map(e => e.id === action.payload.id ? action.payload : e)
+      return {...state, elements: tempElements}
     default:
       return state
   }

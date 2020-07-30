@@ -25,8 +25,7 @@ function App() {
         dispatch(setElements(docs))
       });
     } catch (error) {
-     
-      let localElements = localStorage.getItem('shoppingElements')
+      let localElements = localStorage.getItem('mailkaze-shopping-list')
       if (localElements != null) {
         alert('Error de red, se utilizarán datos locales, puede que no estén actualizados.')
         dispatch(setElements(JSON.parse(localElements)))
@@ -34,14 +33,10 @@ function App() {
         alert('Error de red, no se pudo conectar con la base de datos, revise su conexión.')
       }
     }
-    
-    
   };
   
   useEffect(() => {
-    if (elements.length > 0) {
-      localStorage.setItem('shoppingElements', JSON.stringify(elements))
-    }
+    localStorage.setItem('mailkaze-shopping-list', JSON.stringify(elements))
   }, [elements])
 
   useEffect(() => {

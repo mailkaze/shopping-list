@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import {db} from '../firebase'
 import styled from 'styled-components'
 import { useSelector, useDispatch } from 'react-redux'
-import { setShowForm, setCurrentId } from '../redux/actions'
+import { setShowForm, setCurrentId, editElement } from '../redux/actions'
 
 const FormStyled = styled.form`
   width: 60vw;
@@ -57,10 +57,22 @@ export const Form = () => {
 
   const handleSubmit = async e => {
     e.preventDefault()
+    // No puedo crear un nuevo elemento sin conexión porque trabajo con las
+    // IDs que crea Firebase automáticamente.
     if (currentId === '') { //crear nuevo elemento
+      try {
         await db.collection('shoppingElements').doc().set(element)
+      } catch(e) {
+        alert('Error de red al intentar crear un elemento')
+      }
+        
     } else { // Editar elemento
-        await db.collection('shoppingElements').doc(currentId).update(element)
+        dispatch(editElement({...element, id: currentId}))
+        try {
+          await db.collection('shoppingElements').doc(currentId).update(element)
+        } catch(e) {
+          alert('Error de red, cambios guardados sólo en local.')
+        }      
     }
     
     dispatch(setCurrentId(''))

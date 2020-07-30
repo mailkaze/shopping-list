@@ -29,3 +29,10 @@ export function setSearch(search) {
     payload: search
   }
 }
+
+export function editElement(element) {
+  return {
+    type: 'EDIT_ELEMENT',
+    payload: element
+  }
+}

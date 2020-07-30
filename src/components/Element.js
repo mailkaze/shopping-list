@@ -66,7 +66,6 @@ const ElementStyled = styled.div`
 `
 
 export const Element = ({ element }) => {
-  console.log(element)
   const dispatch = useDispatch()
   const [quantity, setQuantity] = useState(1);
   const [showButtons, setShowButtons] = useState(false)

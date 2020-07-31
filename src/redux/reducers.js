@@ -11,9 +11,13 @@ export default function reducer(state, action) {
     case 'SET_SEARCH':
       return {...state, search: action.payload}
     case 'EDIT_ELEMENT':
-      const tempElements = state.elements
+      const tempElementsToEdit = state.elements
       .map(e => e.id === action.payload.id ? action.payload : e)
-      return {...state, elements: tempElements}
+      return {...state, elements: tempElementsToEdit}
+    case 'DELETE_ELEMENT':
+      const tempElementsToDelete = state.elements
+      .filter(e => e.id !== action.payload)
+      return {...state, elements: tempElementsToDelete}
     default:
       return state
   }

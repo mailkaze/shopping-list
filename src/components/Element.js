@@ -3,7 +3,7 @@ import { db } from "../firebase";
 import styled from 'styled-components'
 import { useDispatch } from 'react-redux'
 import { setShowForm, setCurrentId } from '../redux/actions'
-import { setElements } from '../redux/actions'
+import { editElement, deleteElement } from '../redux/actions'
 
 
 const ElementStyled = styled.div`
@@ -71,32 +71,34 @@ export const Element = ({ element }) => {
   const [showButtons, setShowButtons] = useState(false)
 
   const toggleMarked = async (id) => {
-    try {
-      const res = await db.collection("shoppingElements").doc(id).get();
-      const data = res.data();
-      await db.collection("shoppingElements").doc(id).update({ ...data, marked: !data.marked });
-    } catch (e) {
-      console.log('no se pudo cambiar el marcado en la DB, se hará en local')
-      let localElements = localStorage.getItem('shoppingElements')
-      if (localElements != null) {
-        localElements = JSON.parse(localElements)
-        const i = localElements.findIndex(e => e.id === id)
-        localElements[i].marked = !localElements[i].marked
-        localStorage.setItem('shoppingElements', JSON.stringify(localElements))
-        dispatch(setElements(localElements))
-
-      }
-    }
+    dispatch(editElement({...element, marked: !element.marked}))
+    // try {
+    //   const res = await db.collection("shoppingElements").doc(id).get();
+    //   const data = res.data();
+    //   await db.collection("shoppingElements").doc(id).update({ ...data, marked: !data.marked });
+    // } catch (e) {
+    //   console.log('no se pudo cambiar el marcado en la DB, se hará en local')
+    // }
   };
 
-  const deleteElement = async id => {
-    await db.collection('shoppingElements').doc(id).delete()
+  const deleteEle = async id => {
+    dispatch(deleteElement(id))
+    // try {
+    //   await db.collection('shoppingElements').doc(id).delete()  
+    // } catch {
+    //   alert('Error de red, se borró solo en local.')
+    // }
   }
 
   const updateQuantity = async (num, id) => {
-    const doc = await db.collection('shoppingElements').doc(id).get()
-    let el = {...doc.data(), quantity: num}
-    await db.collection('shoppingElements').doc(id).update(el)
+    dispatch(editElement({...element, quantity: num}))
+    // try {
+    //   const doc = await db.collection('shoppingElements').doc(id).get()
+    //   await db.collection('shoppingElements').doc(id).update({...doc.data(), quantity: num})
+    // } catch {
+    //   console.log('Error de red, se modifica la cantidad sólo en local.')
+    // }
+    
   }
 
   useEffect(() => {
@@ -104,13 +106,15 @@ export const Element = ({ element }) => {
   }, []);
 
   const handleEdit = (id) => {
+    setShowButtons(!showButtons)
     dispatch(setCurrentId(id))
     dispatch(setShowForm(true))
   };
 
   const handleDelete = (id) => {
+    setShowButtons(!showButtons)
     if (window.confirm("¿Borrar este elemento?")) {
-      deleteElement(id);
+      deleteEle(id);
     }
   };
 

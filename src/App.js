@@ -16,23 +16,19 @@ function App() {
   const dispatch = useDispatch()
 
   const getElements = () => {
-    try {
-      db.collection("shoppingElements").onSnapshot((querySnapshot) => {
-        const docs = [];
-        querySnapshot.forEach((doc) => {
-          docs.push({ ...doc.data(), id: doc.id });
-        });
-        dispatch(setElements(docs))
-      });
-    } catch (error) {
-      let localElements = localStorage.getItem('mailkaze-shopping-list')
-      if (localElements != null) {
-        alert('Error de red, se utilizarán datos locales, puede que no estén actualizados.')
-        dispatch(setElements(JSON.parse(localElements)))
-      } else {
-        alert('Error de red, no se pudo conectar con la base de datos, revise su conexión.')
-      }
-    }
+    let localElements = localStorage.getItem('mailkaze-shopping-list')
+    if (localElements != null) dispatch(setElements(JSON.parse(localElements)))
+    // try {
+    //   db.collection("shoppingElements").onSnapshot((querySnapshot) => {
+    //     const docs = []; 
+    //     querySnapshot.forEach((doc) => {
+    //       docs.push({ ...doc.data(), id: doc.id });
+    //     });
+    //     dispatch(setElements(docs))
+    //   });
+    // } catch (error) {
+    //   alert('Error de red, se utilizarán datos locales.')
+    // }
   };
   
   useEffect(() => {

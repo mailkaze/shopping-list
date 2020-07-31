@@ -60,19 +60,19 @@ export const Form = () => {
     // No puedo crear un nuevo elemento sin conexión porque trabajo con las
     // IDs que crea Firebase automáticamente.
     if (currentId === '') { //crear nuevo elemento
-      try {
-        await db.collection('shoppingElements').doc().set(element)
-      } catch(e) {
-        alert('Error de red al intentar crear un elemento')
-      }
+      // try {
+      //   await db.collection('shoppingElements').doc().set(element)
+      // } catch(e) {
+      //   alert('Error de red al intentar crear un elemento')
+      // }
         
     } else { // Editar elemento
         dispatch(editElement({...element, id: currentId}))
-        try {
-          await db.collection('shoppingElements').doc(currentId).update(element)
-        } catch(e) {
-          alert('Error de red, cambios guardados sólo en local.')
-        }      
+        // try {
+        //   await db.collection('shoppingElements').doc(currentId).update(element)
+        // } catch(e) {
+        //   alert('Error de red, cambios guardados sólo en local.')
+        // }      
     }
     
     dispatch(setCurrentId(''))

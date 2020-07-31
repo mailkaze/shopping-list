@@ -36,3 +36,10 @@ export function editElement(element) {
     payload: element
   }
 }
+
+export function deleteElement(id) {
+  return {
+    type: 'DELETE_ELEMENT',
+    payload: id
+  }
+}

@@ -18,17 +18,17 @@ function App() {
   const getElements = () => {
     let localElements = localStorage.getItem('mailkaze-shopping-list')
     if (localElements != null) dispatch(setElements(JSON.parse(localElements)))
-    // try {
-    //   db.collection("shoppingElements").onSnapshot((querySnapshot) => {
-    //     const docs = []; 
-    //     querySnapshot.forEach((doc) => {
-    //       docs.push({ ...doc.data(), id: doc.id });
-    //     });
-    //     dispatch(setElements(docs))
-    //   });
-    // } catch (error) {
-    //   alert('Error de red, se utilizarán datos locales.')
-    // }
+    try {
+      db.collection("shoppingElements").onSnapshot((querySnapshot) => {
+        const docs = []; 
+        querySnapshot.forEach((doc) => {
+          docs.push({ ...doc.data(), id: doc.id });
+        });
+        dispatch(setElements(docs))
+      });
+    } catch (error) {
+      alert('Error de red, se utilizarán datos locales.')
+    }
   };
   
   useEffect(() => {

@@ -17,22 +17,24 @@ function App() {
 
   const getElements = () => {
     let localElements = localStorage.getItem('mailkaze-shopping-list')
-    if (localElements != null) dispatch(setElements(JSON.parse(localElements)))
-    try {
-      db.collection("shoppingElements").onSnapshot((querySnapshot) => {
-        const docs = []; 
-        querySnapshot.forEach((doc) => {
-          docs.push({ ...doc.data(), id: doc.id });
-        });
-        dispatch(setElements(docs))
-      });
-    } catch (error) {
-      alert('Error de red, se utilizarán datos locales.')
+    if (localElements != null) {
+      dispatch(setElements(JSON.parse(localElements)))
     }
+    db.collection("shoppingElements").onSnapshot((querySnapshot) => {
+      const docs = []; 
+      querySnapshot.forEach((doc) => {
+        docs.push({ ...doc.data(), id: doc.id });
+      });
+      if (docs.length > 0) {
+        dispatch(setElements(docs))
+      }
+    });
   };
   
   useEffect(() => {
-    localStorage.setItem('mailkaze-shopping-list', JSON.stringify(elements))
+    if (elements.length > 0){
+      localStorage.setItem('mailkaze-shopping-list', JSON.stringify(elements))
+    }  
   }, [elements])
 
   useEffect(() => {

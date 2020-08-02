@@ -72,33 +72,20 @@ export const Element = ({ element }) => {
 
   const toggleMarked = async (id) => {
     dispatch(editElement({...element, marked: !element.marked}))
-    try {
-      const res = await db.collection("shoppingElements").doc(id).get();
-      const data = res.data();
-      await db.collection("shoppingElements").doc(id).update({ ...data, marked: !data.marked });
-    } catch (e) {
-      console.log('no se pudo cambiar el marcado en la DB, se hará en local')
-    }
+    const res = await db.collection("shoppingElements").doc(id).get();
+    const data = res.data();
+    await db.collection("shoppingElements").doc(id).update({ ...data, marked: !data.marked });
   };
 
   const deleteEle = async id => {
     dispatch(deleteElement(id))
-    try {
-      await db.collection('shoppingElements').doc(id).delete()  
-    } catch {
-      alert('Error de red, se borró solo en local.')
-    }
+    await db.collection('shoppingElements').doc(id).delete()  
   }
 
   const updateQuantity = async (num, id) => {
     dispatch(editElement({...element, quantity: num}))
-    try {
-      const doc = await db.collection('shoppingElements').doc(id).get()
-      await db.collection('shoppingElements').doc(id).update({...doc.data(), quantity: num})
-    } catch {
-      console.log('Error de red, se modifica la cantidad sólo en local.')
-    }
-    
+    const doc = await db.collection('shoppingElements').doc(id).get()
+    await db.collection('shoppingElements').doc(id).update({...doc.data(), quantity: num})
   }
 
   useEffect(() => {

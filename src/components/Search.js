@@ -2,6 +2,8 @@ import React from "react";
 import styled from 'styled-components'
 import { useSelector, useDispatch } from 'react-redux'
 import { setSearch } from '../redux/actions'
+import { faTimes } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 const SearchStyled = styled.div`
   position: relative;
@@ -46,7 +48,7 @@ export const Search = () => {
         value={search}
         autoFocus
       />
-      {search && <i className="fas fa-times" onClick={clearSearch}></i>}
+      {search && <FontAwesomeIcon icon={faTimes} onClick={clearSearch} />}
     </SearchStyled>
   );
 };

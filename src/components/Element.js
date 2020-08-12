@@ -4,7 +4,9 @@ import styled from 'styled-components'
 import { useDispatch } from 'react-redux'
 import { setShowForm, setCurrentId } from '../redux/actions'
 import { editElement, deleteElement } from '../redux/actions'
-
+import { faSquare } from '@fortawesome/free-regular-svg-icons'
+import { faCheck, faEllipsisV, faPen, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 const ElementStyled = styled.div`
   background: #fcc266;
@@ -46,10 +48,6 @@ const ElementStyled = styled.div`
     background: #fcc266;
     border-style: none;
   }
-  .fas {
-    display: inline-block;
-    cursor: pointer;
-  }
   .buttons {
     background: whitesmoke;
     box-shadow: 1px 1px 2px rgba(0, 0, 0, .7);
@@ -60,8 +58,18 @@ const ElementStyled = styled.div`
     bottom: 2px;
     font-size: 1.4em;
   }
+  .fa-ellipsis-v {
+    display: inline-block;
+    cursor: pointer;
+  }
   .fa-pen {
     margin-right: 14px;
+    display: inline-block;
+    cursor: pointer;
+  }
+  .fa-trash {
+    display: inline-block;
+    cursor: pointer;
   }
 `
 
@@ -126,8 +134,8 @@ export const Element = ({ element }) => {
         <label htmlFor={"checkbox" + element.id}>
           {
             element.marked
-            ? <i className="fas fa-check"></i>
-            : <i className="far fa-square"></i>
+            ? <FontAwesomeIcon icon={faCheck} />
+            : <FontAwesomeIcon icon={faSquare} />
           }
         </label>
         <input
@@ -154,18 +162,13 @@ export const Element = ({ element }) => {
         />
         <p>Bs.{Intl.NumberFormat().format(element.price * quantity)}</p>
       </div>
-      <i className="fas fa-ellipsis-v" onClick={() => setShowButtons(!showButtons)}></i>
+      {/* <i className="fas fa-ellipsis-v" onClick={() => setShowButtons(!showButtons)}></i> */}
+      <FontAwesomeIcon icon={faEllipsisV} onClick={() => setShowButtons(!showButtons)} />
       {
         showButtons && (
           <div className="buttons">
-            <i
-              className="fas fa-pen"
-              onClick={() => handleEdit(element.id)}
-            ></i>
-            <i
-              className="fas fa-trash"
-              onClick={() => handleDelete(element.id)}
-            ></i>
+            <FontAwesomeIcon icon={faPen} onClick={() => handleEdit(element.id)} />
+            <FontAwesomeIcon icon={faTrash} onClick={() => handleDelete(element.id)} />
           </div>
         )
       }

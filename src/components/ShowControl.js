@@ -2,10 +2,12 @@ import React from "react";
 import styled from 'styled-components'
 import { useSelector, useDispatch } from 'react-redux'
 import { setShowMarked } from '../redux/actions'
+import { faChevronDown, faChevronRight } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 const ShowControlStyled = styled.div`
   margin: 10px 0 6px;
-  i {
+  svg {
     font-size: 1.2em;
     cursor: pointer;
     margin-right: 5px;
@@ -20,11 +22,10 @@ export const ShowControl = () => {
   const dispatch = useDispatch()
   return (
     <ShowControlStyled className="show-control">
-      {showMarked ? (
-        <i className="fas fa-chevron-down" onClick={() => dispatch(setShowMarked())}></i>
-      ) : (
-        <i className="fas fa-chevron-right" onClick={() => dispatch(setShowMarked())}></i>
-      )}
+      {showMarked 
+      ? <FontAwesomeIcon icon={faChevronDown} onClick={() => dispatch(setShowMarked())} />
+      : <FontAwesomeIcon icon={faChevronRight} onClick={() => dispatch(setShowMarked())} />
+      }
       <span>Mostrar elementos marcados</span>
     </ShowControlStyled>
   );

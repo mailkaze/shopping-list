@@ -2,10 +2,12 @@ import React from 'react'
 import styled from 'styled-components'
 import { useDispatch } from 'react-redux'
 import { setShowForm } from '../redux/actions'
+import { faPlus } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 const ButtonStyled = styled.i`
   border-radius: 50%;
-  padding: 22px;
+  padding: 14.6px 22px;
   font-size: 1.4em;
   background: #ff006e;
   color: white;
@@ -21,9 +23,8 @@ export const AddButton = () => {
   const dispatch = useDispatch()
 
   return (
-    <ButtonStyled 
-      className="fas fa-plus" 
-      onClick={() => dispatch(setShowForm(true)) }
-    ></ButtonStyled>
+    <ButtonStyled onClick={() => dispatch(setShowForm(true))} >
+      <FontAwesomeIcon icon={faPlus} />
+    </ButtonStyled>
   )
 }

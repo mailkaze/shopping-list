@@ -3,12 +3,14 @@ import {db} from '../firebase'
 import styled from 'styled-components'
 import { useSelector, useDispatch } from 'react-redux'
 import { setShowForm, setCurrentId, editElement } from '../redux/actions'
+import { faTimes } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 const FormStyled = styled.form`
-  width: 60vw;
+  width: 80vw;
   position: fixed;
   background: #fefae0;
-  left: 18vw;
+  left: 7vw;
   top: 20vh;
   border-radius: 8px;
   box-shadow: 1px 1px 3px rgba(0,0,0,.6);
@@ -94,7 +96,7 @@ export const Form = () => {
 
   return (
     <FormStyled onSubmit={handleSubmit}>
-      <i className="fas fa-times" onClick={handleClose} ></i>
+      <FontAwesomeIcon icon={faTimes} onClick={handleClose} />
       <div className="form-content">
         <input 
           id="name"

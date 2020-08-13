@@ -7,6 +7,7 @@ import { editElement, deleteElement } from '../redux/actions'
 import { faSquare } from '@fortawesome/free-regular-svg-icons'
 import { faCheck, faEllipsisV, faPen, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Draggable } from 'react-beautiful-dnd'
 
 const ElementStyled = styled.div`
   background: #fcc266;
@@ -73,7 +74,7 @@ const ElementStyled = styled.div`
   }
 `
 
-export const Element = ({ element }) => {
+export const Element = ({ element, index }) => {
   const dispatch = useDispatch()
   const [quantity, setQuantity] = useState(1);
   const [showButtons, setShowButtons] = useState(false)
@@ -129,49 +130,58 @@ export const Element = ({ element }) => {
   };
 
   return (
-    <ElementStyled className="card">
-      <div className="content">
-        <label htmlFor={"checkbox" + element.id}>
-          {
-            element.marked
-            ? <FontAwesomeIcon icon={faCheck} />
-            : <FontAwesomeIcon icon={faSquare} />
-          }
-        </label>
-        <input
-          type="checkbox"
-          name="checkbox"
-          className="checkbox"
-          id={"checkbox" + element.id}
-          checked={element.marked}
-          onChange={() => {
-            toggleMarked(element.id)
-          }
-          }
-        />
-        <p>{element.name} X </p>
-        <input
-          className="form-control"
-          id="quantity"
-          type="number"
-          name="quantity"
-          step="0.1"
-          value={quantity}
-          onChange={(e) => handleChange(e)}
-          onKeyUp={(e) => handleKeyUp(e, element.id)}
-        />
-        <p>Bs.{Intl.NumberFormat().format(element.price * quantity)}</p>
-      </div>
-      {/* <i className="fas fa-ellipsis-v" onClick={() => setShowButtons(!showButtons)}></i> */}
-      <FontAwesomeIcon icon={faEllipsisV} onClick={() => setShowButtons(!showButtons)} />
+    <Draggable draggableId={element.id} index={index} >
       {
-        showButtons && (
-          <div className="buttons">
-            <FontAwesomeIcon icon={faPen} onClick={() => handleEdit(element.id)} />
-            <FontAwesomeIcon icon={faTrash} onClick={() => handleDelete(element.id)} />
-          </div>
+        provided => (
+          <ElementStyled className="card"
+          {...provided.draggableProps} 
+          {...provided.dragHandleProps} 
+          ref={provided.innerRef} >
+            <div className="content">
+              <label htmlFor={"checkbox" + element.id}>
+                {
+                  element.marked
+                  ? <FontAwesomeIcon icon={faCheck} />
+                  : <FontAwesomeIcon icon={faSquare} />
+                }
+              </label>
+              <input
+                type="checkbox"
+                name="checkbox"
+                className="checkbox"
+                id={"checkbox" + element.id}
+                checked={element.marked}
+                onChange={() => {
+                  toggleMarked(element.id)
+                }
+                }
+              />
+              <p>{element.name} X </p>
+              <input
+                className="form-control"
+                id="quantity"
+                type="number"
+                name="quantity"
+                step="0.1"
+                value={quantity}
+                onChange={(e) => handleChange(e)}
+                onKeyUp={(e) => handleKeyUp(e, element.id)}
+              />
+              <p>Bs.{Intl.NumberFormat().format(element.price * quantity)}</p>
+            </div>
+            {/* <i className="fas fa-ellipsis-v" onClick={() => setShowButtons(!showButtons)}></i> */}
+            <FontAwesomeIcon icon={faEllipsisV} onClick={() => setShowButtons(!showButtons)} />
+            {
+              showButtons && (
+                <div className="buttons">
+                  <FontAwesomeIcon icon={faPen} onClick={() => handleEdit(element.id)} />
+                  <FontAwesomeIcon icon={faTrash} onClick={() => handleDelete(element.id)} />
+                </div>
+              )
+            }
+          </ElementStyled>
         )
       }
-    </ElementStyled>
+    </Draggable>
   );
 };

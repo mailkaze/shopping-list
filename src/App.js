@@ -8,6 +8,7 @@ import { AddButton } from "./components/AddButton";
 import { db } from "./firebase";
 import { useSelector, useDispatch} from 'react-redux'
 import { setElements } from './redux/actions'
+import { DragDropContext} from 'react-beautiful-dnd'
 
 function App() {
   const elements = useSelector(state => state.elements)
@@ -41,8 +42,12 @@ function App() {
     getElements();
   }, []);
 
+  function onDragEnd(result) {
+    // reordenamos la lista
+  }
+
   return (
-    <>
+    <DragDropContext onDragEnd={onDragEnd} >
       <div className="container">
         <Search />
         <Total />
@@ -52,7 +57,7 @@ function App() {
       </div>
       { showForm && <Form /> }
       { !showForm && <AddButton /> }
-    </>
+    </DragDropContext>
   );
 }
 

@@ -1,7 +1,7 @@
 import React from 'react'
 import {Element} from './Element'
 import { useSelector } from 'react-redux'
-
+import { Droppable } from 'react-beautiful-dnd'
 
 export const List = ({ marked }) => {
   const elements = useSelector(state => state.elements)
@@ -17,17 +17,26 @@ export const List = ({ marked }) => {
   }
 
   return (
-    <>
+    <Droppable droppableId={!marked ? "list1" : "list2"} >
       {
-        filterSearch()
-        .filter(e => e.marked === marked)
-        .map(element => 
-          <Element 
-            element={element}  
-            key={element.id} 
-          /> 
+        provided => (
+          <div ref={provided.innerRef} {...provided.droppableProps} >
+            {
+              filterSearch()
+              .filter(e => e.marked === marked)
+              .map((element, index) => 
+                <Element 
+                  element={element}  
+                  key={element.id} 
+                  index={index}
+                /> 
+              )
+            }
+            {provided.placeholder} 
+          </div>
         )
       }
-    </>
+      
+    </Droppable>
   )
 }

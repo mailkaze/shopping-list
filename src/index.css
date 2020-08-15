@@ -13,6 +13,10 @@ body {
     align-items: center;
 }
 
+.list-container {
+    width: 100%
+}
+
 @media screen and (min-width: 500px) {
     .container {
         width: 80%;

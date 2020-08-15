@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { db } from "../firebase";
 import styled from 'styled-components'
-import { useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { setShowForm, setCurrentId } from '../redux/actions'
 import { editElement, deleteElement } from '../redux/actions'
 import { faSquare } from '@fortawesome/free-regular-svg-icons'
@@ -78,6 +78,7 @@ export const Element = ({ element, index }) => {
   const dispatch = useDispatch()
   const [quantity, setQuantity] = useState(1);
   const [showButtons, setShowButtons] = useState(false)
+  const marked = useSelector(state => state.marked)
 
   const toggleMarked = async (id) => {
     dispatch(editElement({...element, marked: !element.marked}))
@@ -139,37 +140,19 @@ export const Element = ({ element, index }) => {
           ref={provided.innerRef} >
             <div className="content">
               <label htmlFor={"checkbox" + element.id}>
-                {
-                  element.marked
-                  ? <FontAwesomeIcon icon={faCheck} />
-                  : <FontAwesomeIcon icon={faSquare} />
-                }
+                { element.marked ? <FontAwesomeIcon icon={faCheck} /> : <FontAwesomeIcon icon={faSquare} /> }
               </label>
-              <input
-                type="checkbox"
-                name="checkbox"
-                className="checkbox"
-                id={"checkbox" + element.id}
-                checked={element.marked}
-                onChange={() => {
-                  toggleMarked(element.id)
-                }
-                }
+              <input type="checkbox" name="checkbox" className="checkbox"
+                id={"checkbox" + element.id} checked={element.marked}
+                onChange={() => toggleMarked(element.id) }
               />
               <p>{element.name} X </p>
-              <input
-                className="form-control"
-                id="quantity"
-                type="number"
-                name="quantity"
-                step="0.1"
-                value={quantity}
-                onChange={(e) => handleChange(e)}
+              <input className="form-control" id="quantity" type="number" name="quantity"
+                step="0.1" value={quantity} onChange={(e) => handleChange(e)}
                 onKeyUp={(e) => handleKeyUp(e, element.id)}
               />
               <p>Bs.{Intl.NumberFormat().format(element.price * quantity)}</p>
             </div>
-            {/* <i className="fas fa-ellipsis-v" onClick={() => setShowButtons(!showButtons)}></i> */}
             <FontAwesomeIcon icon={faEllipsisV} onClick={() => setShowButtons(!showButtons)} />
             {
               showButtons && (

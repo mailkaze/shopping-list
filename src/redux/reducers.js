@@ -18,6 +18,8 @@ export default function reducer(state, action) {
       const tempElementsToDelete = state.elements
       .filter(e => e.id !== action.payload)
       return {...state, elements: tempElementsToDelete}
+    case 'SET_COLUMNS':
+      return {...state, columns: action.payload}
     default:
       return state
   }

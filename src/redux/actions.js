@@ -43,3 +43,10 @@ export function deleteElement(id) {
     payload: id
   }
 }
+
+export function setColumns(columns) {
+  return {
+    type: 'SET_COLUMNS',
+    payload: columns
+  }
+}

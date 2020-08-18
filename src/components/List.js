@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux'
 import { Droppable } from 'react-beautiful-dnd'
 
 export const List = ({ marked, orderedElements }) => {
-  const elements = useSelector(state => state.elements)
   const search = useSelector(state => state.search)
   
   const filterSearch = () => {

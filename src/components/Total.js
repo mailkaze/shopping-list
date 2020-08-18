@@ -16,7 +16,7 @@ export const Total = () => {
 
   const calculateTotal = () => {
     let t = 0
-    if (elements.legth > 0) {
+    if (elements.length > 0) {
       elements
       .filter(e => !e.marked)
       .map(e => t += (parseFloat(e.price) * parseFloat(e.quantity)))

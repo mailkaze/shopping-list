@@ -3,7 +3,7 @@ import { db } from "../firebase";
 import styled from 'styled-components'
 import { useSelector, useDispatch } from 'react-redux'
 import { setShowForm, setCurrentId } from '../redux/actions'
-import { editElement, deleteElement } from '../redux/actions'
+import { editElement, deleteElement, setColumns } from '../redux/actions'
 import { faSquare } from '@fortawesome/free-regular-svg-icons'
 import { faCheck, faEllipsisV, faPen, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -76,9 +76,9 @@ const ElementStyled = styled.div`
 
 export const Element = ({ element, index }) => {
   const dispatch = useDispatch()
+  const columns = useSelector(state => state.columns)
   const [quantity, setQuantity] = useState(1);
   const [showButtons, setShowButtons] = useState(false)
-  const marked = useSelector(state => state.marked)
 
   const toggleMarked = async (id) => {
     dispatch(editElement({...element, marked: !element.marked}))
@@ -88,6 +88,17 @@ export const Element = ({ element, index }) => {
   };
 
   const deleteEle = async id => {
+    // borrar el elemento de la lista ordenada de columns:
+    let colNoMarked = columns['no-marked'].elementIds
+    let colMarked = columns['marked'].elementIds
+    colNoMarked = colNoMarked.filter(x => x !== id)
+    colMarked = colMarked.filter(x => x !== id)
+    const newColumns = {
+      'no-marked': {...columns['no-marked'], elementIds: colNoMarked},
+      'marked': {...columns['marked'], elementIds: colMarked},
+    }
+    dispatch(setColumns(newColumns))
+
     dispatch(deleteElement(id))
     await db.collection('shoppingElements').doc(id).delete()  
   }

@@ -46,7 +46,6 @@ export const Search = () => {
         onChange={handleChange}
         placeholder="Buscar ..."
         value={search}
-        autoFocus
       />
       {search && <FontAwesomeIcon icon={faTimes} onClick={clearSearch} />}
     </SearchStyled>

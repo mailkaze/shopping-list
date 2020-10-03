@@ -18,10 +18,8 @@ function App() {
   const dispatch = useDispatch()
 
   const getElements = () => {
-    let localElements = localStorage.getItem('mailkaze-shopping-list')
-    if (localElements != null) {
-      dispatch(setElements(JSON.parse(localElements)))
-    }
+    // Vamos a intentar hacer el trabajo local con la cache offline que crea Firestore:
+    // TODO: debería hacer su trabajo aunque no encuentre la colección o ésta esté vacía
     db.collection("shoppingElements").onSnapshot((querySnapshot) => {
       const docs = []; 
       querySnapshot.forEach((doc) => {
@@ -34,38 +32,39 @@ function App() {
   };
 
   async function setListsOrder() {
-    // sacamos el orden de las listas del localStorage:
-    const localColumnsString = localStorage.getItem('mailkaze-shopping-columns')
-    if (localColumnsString != null) {
-      const localColumns = JSON.parse(localColumnsString)
-      // si las listas no están vacías:
-      if (localColumns["no-marked"].elementIds.length > 0 && localColumns["marked"].elementIds.length > 0) {
-        dispatch(setColumns(localColumns))
-      } else { // si las listas están vacías las creamos desde cero
-        if (elements.length > 0) {
-          const elementIdsNoMarked = elements
-          .filter(e => !e.marked)
-          .map(e => e.id)
-          const elementIdsMarked = elements
-          .filter(e => e.marked)
-          .map(e => e.id)
-          const columnNoMarked = {...columns["no-marked"], elementIds: elementIdsNoMarked}
-          const columnMarked = {...columns["marked"], elementIds: elementIdsMarked}
-          const newColumns = {...columns, "no-marked": columnNoMarked, "marked": columnMarked}
-          dispatch(setColumns(newColumns))
-        }
-      }  
-    } 
+    // Vamos a trabajar 'columns' también con la caché de firebase, sin localstorage:
 
     // traemos el orden de las listas de internet si se puede:
+    // TODO: debería hacer su trabajo aunque no encuentre columns o éste esté vacío
     const noMarked = await db.collection('columns').doc('no-marked').get()
     const marked = await db.collection('columns').doc('marked').get()
+
     const tempColumns = {
       "no-marked": {...noMarked.data()},
       "marked": {...marked.data()}
-    } // si el orden en Firebase no está vacío lo traemos al state:
+    }
+    
+    // si el orden en Firebase no está vacío lo traemos al state:
     if (tempColumns["no-marked"].elementIds.length > 0 && tempColumns["marked"].elementIds.length > 0) {
       dispatch(setColumns(tempColumns))
+    } else { 
+      // si las listas están vacías las creamos desde cero:
+      // primero comprobamos que 'elements no esté vacío:
+      if (elements.length > 0) {
+        const elementIdsNoMarked = elements
+        .filter(e => !e.marked)
+        .map(e => e.id)
+
+        const elementIdsMarked = elements
+        .filter(e => e.marked)
+        .map(e => e.id)
+
+        const columnNoMarked = {...columns["no-marked"], elementIds: elementIdsNoMarked}
+        const columnMarked = {...columns["marked"], elementIds: elementIdsMarked}
+        const newColumns = {...columns, "no-marked": columnNoMarked, "marked": columnMarked}
+
+        dispatch(setColumns(newColumns))
+      }
     } 
   }
 
@@ -74,20 +73,24 @@ function App() {
     let eleMarked = elements.filter(e => e.marked) 
     let colNoMarked = columns['no-marked'].elementIds
     let colMarked = columns['marked'].elementIds
-    // si hay un marcado que no estaba en la lista del columns, lo añadimos al final y lo borramos de la otra lista
+    // Si 'noMarked' no incluye un ID no marcado de 'elements', lo añade al final y lo borra de 'marked'
+    // Si un elemento se añadió, aparecerá en la lista de noMarked y no se borrará de ningún sitio
+    // Si un elemento se borró se borra de estas listas al momento de borrarlo y no aquí.
+    // TODO: esto debería ser un ForEach porque no devuelve nada:
     eleNoMarked.map(e => {
       if(!colNoMarked.includes(e.id)) {
         colNoMarked.push(e.id)
         colMarked = colMarked.filter(id => id !== e.id)    
       }
     })
-    // vicebersa
+    // Si 'marked' no incluye un ID marcado de 'elements', lo añade al principio y lo borra de 'noMarked'
     eleMarked.map(e => {
       if(!colMarked.includes(e.id)) {
         colMarked.unshift(e.id)
         colNoMarked = colNoMarked.filter(id => id !== e.id) 
       }
     })
+
     const newColumns = {
       'no-marked': {...columns['no-marked'], elementIds: colNoMarked},
       'marked': {...columns['marked'], elementIds: colMarked},
@@ -97,37 +100,46 @@ function App() {
   }
   
   useEffect(() => {
-    if (elements.length > 0){
-      localStorage.setItem('mailkaze-shopping-list', JSON.stringify(elements))
-    }  
-    // TODO: aquí debemos actualizar las columnas
+    // Intentamos trabajar con la cache de Firestore, anulamos el localstorage: 
     updateColumns()
   }, [elements])
 
   useEffect(() => {
+    // Cuando cambia 'columns' actualizamos su estado a firestore
+    // comprobamos que las listas no estén vacías:
     if (columns["no-marked"].elementIds.length > 0 && columns["marked"].elementIds.length > 0){
-      localStorage.setItem('mailkaze-shopping-columns', JSON.stringify(columns))
       db.collection('columns').doc('no-marked').set(columns['no-marked'])
       db.collection('columns').doc('marked').set(columns['marked'])
     }
   }, [columns])
 
   useEffect(() => {
+    // Lo primero que se ejecuta:
+    // Activamos el almacenamiento de los datos en cache para esta app
+    // y le asignamos una cache de tamaño ilimitado para que no borre cosas:
+    db.settings({
+      cacheSizeBytes: db.CACHE_SIZE_UNLIMITED
+    });
+    db.enablePersistence()
     getElements();
     setListsOrder()
   }, []);
 
   function onDragEnd(result) {
     const { destination, source, draggableId } = result
+    // si no se suelta en ningún sitio válido:
     if (!destination) {
       return
     }
+    // Si se suelta donde estaba:
     if (destination.droppableId === source.droppableId && destination.index === source.index) {
       return
-    } // No permitimos que se crucen elementos entre listas:
+    } 
+    // No permitimos que se crucen elementos entre listas:
     if (destination.droppableId !== source.droppableId) {
       return
     }
+    
     const column = columns[source.droppableId]
     const newElementIds =  Array.from(column.elementIds)
     newElementIds.splice(source.index, 1)

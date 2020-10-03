@@ -59,8 +59,6 @@ export const Form = () => {
 
   const handleSubmit = async e => {
     e.preventDefault()
-    // No puedo crear un nuevo elemento sin conexión porque trabajo con las
-    // IDs que crea Firebase automáticamente.
     if (currentId === '') { //crear nuevo elemento
       await db.collection('shoppingElements').doc().set(element)
     } else { // Editar elemento

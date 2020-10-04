@@ -7,6 +7,7 @@ export const List = ({ marked, orderedElements }) => {
   const search = useSelector(state => state.search)
   
   const filterSearch = () => {
+    // TODO: revisar qué pasa aquí:
     orderedElements.map((o, index) => {if (o === undefined) {console.log('undefined en la lista ' + marked + ' con index ' + index)}})
     if (search) {
       return orderedElements.filter(e => 

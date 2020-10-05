@@ -59,6 +59,7 @@ export const Form = () => {
 
   const handleSubmit = async e => {
     e.preventDefault()
+    dispatch(setShowForm())
     if (currentId === '') { //crear nuevo elemento
       await db.collection('shoppingElements').doc().set(element)
     } else { // Editar elemento
@@ -67,7 +68,6 @@ export const Form = () => {
     }
     dispatch(setCurrentId(''))
     setElement(initialElement)
-    dispatch(setShowForm())
   }
 
   const handleChange = e => {

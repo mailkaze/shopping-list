@@ -98,9 +98,11 @@ export const Element = ({ element, index }) => {
       'marked': {...columns['marked'], elementIds: colMarked},
     }
     dispatch(setColumns(newColumns))
-
+    console.log('borrado de columns')
+    //lo borra de la base de datos:
     dispatch(deleteElement(id))
     await db.collection('shoppingElements').doc(id).delete()  
+    console.log('borrado de elements en la base de datos')
   }
 
   const updateQuantity = async (num, id) => {

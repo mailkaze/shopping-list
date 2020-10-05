@@ -110,6 +110,7 @@ function App() {
     if (columns["no-marked"].elementIds.length > 0 && columns["marked"].elementIds.length > 0){
       db.collection('columns').doc('no-marked').set(columns['no-marked'])
       db.collection('columns').doc('marked').set(columns['marked'])
+      console.log('borrado de columns en la base de datos')
     }
   }, [columns])
 

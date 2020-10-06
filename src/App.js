@@ -9,6 +9,7 @@ import { db } from "./firebase";
 import { useSelector, useDispatch} from 'react-redux'
 import { setElements, setColumns } from './redux/actions'
 import { DragDropContext} from 'react-beautiful-dnd'
+import { NavBar } from "./components/NavBar";
 
 function App() {
   const elements = useSelector(state => state.elements)
@@ -153,7 +154,9 @@ function App() {
   }
 
   return (
-    <DragDropContext onDragEnd={onDragEnd} >
+    <>
+      <NavBar />
+      <DragDropContext onDragEnd={onDragEnd} >
       <div className="container">
         <Search />
         <Total />
@@ -168,6 +171,8 @@ function App() {
       { showForm && <Form /> }
       { !showForm && <AddButton /> }
     </DragDropContext>
+    </>
+    
   );
 }
 

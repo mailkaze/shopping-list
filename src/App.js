@@ -27,6 +27,7 @@ function App() {
         docs.push({ ...doc.data(), id: doc.id });
       });
       if (docs.length > 0) {
+        console.log('traigo los elementos de Firebase')
         dispatch(setElements(docs))
       }
     });
@@ -47,6 +48,7 @@ function App() {
     
     // si el orden en Firebase no está vacío lo traemos al state:
     if (tempColumns["no-marked"].elementIds.length > 0 && tempColumns["marked"].elementIds.length > 0) {
+      console.log('traigo el orden de listas desde Firebase')
       dispatch(setColumns(tempColumns))
     } else { 
       // si las listas están vacías las creamos desde cero:
@@ -63,7 +65,7 @@ function App() {
         const columnNoMarked = {...columns["no-marked"], elementIds: elementIdsNoMarked}
         const columnMarked = {...columns["marked"], elementIds: elementIdsMarked}
         const newColumns = {...columns, "no-marked": columnNoMarked, "marked": columnMarked}
-
+        console.log('Creo el orden de listas porque estaba vacío en Firebase')
         dispatch(setColumns(newColumns))
       }
     } 
@@ -76,7 +78,6 @@ function App() {
     let colMarked = columns['marked'].elementIds
     // Si 'noMarked' no incluye un ID no marcado de 'elements', lo añade al final y lo borra de 'marked'
     // Si un elemento se añadió, aparecerá en la lista de noMarked y no se borrará de ningún sitio
-    // Si un elemento se borró se borra de estas listas al momento de borrarlo y no aquí.
     // TODO: esto debería ser un ForEach porque no devuelve nada:
     eleNoMarked.map(e => {
       if(!colNoMarked.includes(e.id)) {
@@ -91,6 +92,12 @@ function App() {
         colNoMarked = colNoMarked.filter(id => id !== e.id) 
       }
     })
+
+    // Si un elemento se borró no estará en elements, lo borramos de columns aquí:
+    const elementIDs = elements.map(e => e.id)
+    colMarked = colMarked.filter(id => elementIDs.includes(id))
+    colNoMarked = colNoMarked.filter(id => elementIDs.includes(id))
+    console.log('si sobraba un ID en columns se borró aquí')
 
     const newColumns = {
       'no-marked': {...columns['no-marked'], elementIds: colNoMarked},
@@ -111,7 +118,7 @@ function App() {
     if (columns["no-marked"].elementIds.length > 0 && columns["marked"].elementIds.length > 0){
       db.collection('columns').doc('no-marked').set(columns['no-marked'])
       db.collection('columns').doc('marked').set(columns['marked'])
-      console.log('borrado de columns en la base de datos')
+      console.log('Actualizo columns en la base de datos')
     }
   }, [columns])
 

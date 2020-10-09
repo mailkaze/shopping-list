@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Search } from "./components/Search";
 import { List } from "./components/List";
 import { ShowControl } from "./components/ShowControl";
@@ -16,6 +16,7 @@ function App() {
   const showMarked = useSelector(state => state.showMarked)
   const showForm = useSelector(state => state.showForm)
   const columns = useSelector(state => state.columns)
+  const [colsReceived, setColsReceived] = useState(false)
   const dispatch = useDispatch()
 
   const getElements = () => {
@@ -34,8 +35,11 @@ function App() {
   };
 
   async function setListsOrder() {
+    console.log('setlistsorder')
     // Vamos a trabajar 'columns' también con la caché de firebase, sin localstorage:
-
+    setTimeout(() => { // si no recibe nada en 3,5 segundos activa la funcionalidad de updateColumns
+      setColsReceived(true)
+    }, 3500)
     // traemos el orden de las listas de internet si se puede:
     // TODO: debería hacer su trabajo aunque no encuentre columns o éste esté vacío
     const noMarked = await db.collection('columns').doc('no-marked').get()
@@ -48,7 +52,7 @@ function App() {
     
     // si el orden en Firebase no está vacío lo traemos al state:
     if (tempColumns["no-marked"].elementIds.length > 0 && tempColumns["marked"].elementIds.length > 0) {
-      console.log('traigo el orden de listas desde Firebase')
+      console.log('traigo el orden de listas desde Firebase, noMarked es:', tempColumns["no-marked"])
       dispatch(setColumns(tempColumns))
     } else { 
       // si las listas están vacías las creamos desde cero:
@@ -69,6 +73,7 @@ function App() {
         dispatch(setColumns(newColumns))
       }
     } 
+    setColsReceived(true) //recibió las columnas del servidor y activa la funcionalidad de uptadeColumns
   }
 
   function updateColumns() {
@@ -115,11 +120,14 @@ function App() {
   useEffect(() => {
     // Cuando cambia 'columns' actualizamos su estado a firestore
     // comprobamos que las listas no estén vacías:
-    if (columns["no-marked"].elementIds.length > 0 && columns["marked"].elementIds.length > 0){
-      db.collection('columns').doc('no-marked').set(columns['no-marked'])
-      db.collection('columns').doc('marked').set(columns['marked'])
-      console.log('Actualizo columns en la base de datos')
+    if (colsReceived) {
+      if (columns["no-marked"].elementIds.length > 0 && columns["marked"].elementIds.length > 0){
+        db.collection('columns').doc('no-marked').set(columns['no-marked'])
+        db.collection('columns').doc('marked').set(columns['marked'])
+        console.log('Actualizo columns en la base de datos, noMarked es:', columns['no-marked'])
+      }
     }
+    
   }, [columns])
 
   useEffect(() => {
@@ -130,6 +138,7 @@ function App() {
       cacheSizeBytes: db.CACHE_SIZE_UNLIMITED
     });
     db.enablePersistence()
+
     getElements();
     setListsOrder()
   }, []);

@@ -17,6 +17,14 @@ body {
     width: 100%
 }
 
+.login-message {
+    display: block;
+    width: 8em;
+    margin: auto;
+    margin-top: 8em;
+    font-weight: 700;
+}
+
 @media screen and (min-width: 500px) {
     .container {
         width: 80%;

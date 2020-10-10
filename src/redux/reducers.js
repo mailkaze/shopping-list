@@ -20,6 +20,8 @@ export default function reducer(state, action) {
       return {...state, elements: tempElementsToDelete}
     case 'SET_COLUMNS':
       return {...state, columns: action.payload}
+    case 'SET_USER':
+      return {...state, user: action.payload}
     default:
       return state
   }

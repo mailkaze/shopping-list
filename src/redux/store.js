@@ -19,6 +19,7 @@ const initialState = {
   currentId: '',
   showMarked: true,
   showForm: false,
+  user: null,
 }
 
 export default createStore(reducer, initialState)

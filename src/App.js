@@ -5,9 +5,9 @@ import { ShowControl } from "./components/ShowControl";
 import { Total } from "./components/Total";
 import { Form } from "./components/Form";
 import { AddButton } from "./components/AddButton";
-import { db } from "./firebase";
+import { db, auth } from "./firebase";
 import { useSelector, useDispatch} from 'react-redux'
-import { setElements, setColumns } from './redux/actions'
+import { setElements, setColumns, setUser } from './redux/actions'
 import { DragDropContext} from 'react-beautiful-dnd'
 import { NavBar } from "./components/NavBar";
 
@@ -16,6 +16,7 @@ function App() {
   const showMarked = useSelector(state => state.showMarked)
   const showForm = useSelector(state => state.showForm)
   const columns = useSelector(state => state.columns)
+  const user = useSelector(state => state.user)
   const [colsReceived, setColsReceived] = useState(false)
   const dispatch = useDispatch()
 
@@ -28,15 +29,12 @@ function App() {
         docs.push({ ...doc.data(), id: doc.id });
       });
       if (docs.length > 0) {
-        console.log('traigo los elementos de Firebase')
         dispatch(setElements(docs))
       }
     });
   };
 
   async function setListsOrder() {
-    console.log('setlistsorder')
-    // Vamos a trabajar 'columns' también con la caché de firebase, sin localstorage:
     setTimeout(() => { // si no recibe nada en 3,5 segundos activa la funcionalidad de updateColumns
       setColsReceived(true)
     }, 3500)
@@ -52,7 +50,6 @@ function App() {
     
     // si el orden en Firebase no está vacío lo traemos al state:
     if (tempColumns["no-marked"].elementIds.length > 0 && tempColumns["marked"].elementIds.length > 0) {
-      console.log('traigo el orden de listas desde Firebase, noMarked es:', tempColumns["no-marked"])
       dispatch(setColumns(tempColumns))
     } else { 
       // si las listas están vacías las creamos desde cero:
@@ -69,7 +66,7 @@ function App() {
         const columnNoMarked = {...columns["no-marked"], elementIds: elementIdsNoMarked}
         const columnMarked = {...columns["marked"], elementIds: elementIdsMarked}
         const newColumns = {...columns, "no-marked": columnNoMarked, "marked": columnMarked}
-        console.log('Creo el orden de listas porque estaba vacío en Firebase')
+
         dispatch(setColumns(newColumns))
       }
     } 
@@ -102,7 +99,6 @@ function App() {
     const elementIDs = elements.map(e => e.id)
     colMarked = colMarked.filter(id => elementIDs.includes(id))
     colNoMarked = colNoMarked.filter(id => elementIDs.includes(id))
-    console.log('si sobraba un ID en columns se borró aquí')
 
     const newColumns = {
       'no-marked': {...columns['no-marked'], elementIds: colNoMarked},
@@ -110,6 +106,18 @@ function App() {
     }
     // actualizamos el state columns
     dispatch(setColumns(newColumns))
+  }
+
+  function authStateListener(){
+    auth.onAuthStateChanged(function(userData) {
+      dispatch(setUser(userData))
+
+      if (userData) {
+        // User is signed in.
+      } else {
+        // No user is signed in.
+      }
+    })
   }
   
   useEffect(() => {
@@ -124,11 +132,14 @@ function App() {
       if (columns["no-marked"].elementIds.length > 0 && columns["marked"].elementIds.length > 0){
         db.collection('columns').doc('no-marked').set(columns['no-marked'])
         db.collection('columns').doc('marked').set(columns['marked'])
-        console.log('Actualizo columns en la base de datos, noMarked es:', columns['no-marked'])
       }
     }
     
   }, [columns])
+
+  useEffect(() => {
+    if (user) console.log('user:', user.photoURL)
+  }, [user])
 
   useEffect(() => {
     // Lo primero que se ejecuta:
@@ -139,8 +150,12 @@ function App() {
     });
     db.enablePersistence()
 
-    getElements();
+    //Activamos el escuchador de cambios en el estado de autorizacion:
+    authStateListener()
+    getElements()
     setListsOrder()
+
+
   }, []);
 
   function onDragEnd(result) {
@@ -172,21 +187,27 @@ function App() {
   return (
     <>
       <NavBar />
-      <DragDropContext onDragEnd={onDragEnd} >
-      <div className="container">
-        <Search />
-        <Total />
-        <List marked={false} 
-          orderedElements={ columns['no-marked'].elementIds.map(id => elements.filter(e => e.id === id)[0]) }
-        />
-        <ShowControl />
-        { showMarked && <List marked={true} 
-          orderedElements={ columns['marked'].elementIds.map(id => elements.filter(e => e.id === id)[0]) }
-        /> }
-      </div>
-      { showForm && <Form /> }
-      { !showForm && <AddButton /> }
-    </DragDropContext>
+      {
+        user ? (
+          <DragDropContext onDragEnd={onDragEnd} >
+            <div className="container">
+              <Search />
+              <Total />
+              <List marked={false} 
+                orderedElements={ columns['no-marked'].elementIds.map(id => elements.filter(e => e.id === id)[0]) }
+              />
+              <ShowControl />
+              { showMarked && <List marked={true} 
+                orderedElements={ columns['marked'].elementIds.map(id => elements.filter(e => e.id === id)[0]) }
+              /> }
+            </div>
+            { showForm && <Form /> }
+            { !showForm && <AddButton /> }
+          </DragDropContext>
+        )
+        : <p className='login-message'>Sign in to start ;)</p>
+      }
+      
     </>
     
   );

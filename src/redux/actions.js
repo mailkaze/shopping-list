@@ -50,3 +50,10 @@ export function setColumns(columns) {
     payload: columns
   }
 }
+
+export function setUser(user) {
+  return {
+    type: 'SET_USER',
+    payload: user
+  }
+}

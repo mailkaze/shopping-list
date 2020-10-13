@@ -1,5 +1,7 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import { auth } from '../firebase'
 import firebase from 'firebase/app'
 
@@ -18,13 +20,75 @@ const SignupModalStyled = styled.div`
    height: auto;
    top: 50%;
    left: 50%;
-   transform: translate(-50%, -50%)
+   transform: translate(-50%, -50%);
+   margin-top: 10px;
+   border-radius: 8px;
+   box-shadow: 1px 1px 2px rgba(0, 0, 0, .3);
+   padding: 12px 20px;
  }
+ form {
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+  }
+  h5 {
+    margin: 0;
+  }
+  input {
+    height: 1.8em;
+    margin-top: 7px;
+    border-style: none;
+    border: 1px solid grey;
+    border-radius: 3px;
+    padding: 8px 14px;
+  }
+  button {
+    border-style: none;
+    background: #0097e6;
+    color: white;
+    padding: 10px 0;
+    margin-top: 7px;
+    border-radius: 3px;
+    cursor: pointer;
+  }
 `
 
 export default function SignupModal({ handleClose, showSignup}) {
-  function EmailSignup() {
+  const [email, setEmail] = useState('')
+  const [password1, setPassword1] = useState('')
+  const [password2, setPassword2] = useState('')
+  const [error, setError] = useState(false)
 
+  function onChange(e) {
+    switch (e.target.id) {
+      case 'email':
+        setEmail(e.target.value)
+        break
+      case 'password1':
+        setPassword1(e.target.value)
+        break
+      case 'password2':
+        setPassword2(e.target.value)
+        break
+      default: break
+    }
+  }
+
+  function EmailSignup(e) {
+    e.preventDefault()
+    if (password1 === password2) {
+    auth.createUserWithEmailAndPassword(email, password1)
+    .then( async userCredential => {
+      setError(false) 
+      setEmail('')
+      setPassword1('')
+      setPassword2('')
+      handleClose()
+    })
+    } else {
+      setError(true)
+    }
   }
 
   function GoogleSignUp() {
@@ -37,13 +101,43 @@ export default function SignupModal({ handleClose, showSignup}) {
       { showSignup && (
         <SignupModalStyled onClick={handleClose}>
           <div className="modal-main" onClick={(e) => e.stopPropagation()}>
-            <h3>Registro</h3>
-            <button onClick={handleClose} >cerrar</button>
-            <input type="text" placeholder="email"/>
-            <input type="password" placeholder="password"/>
-            <input type="password" placeholder="prepite el password"/>
-            <button onClick={EmailSignup} >Registrarse con email</button>
-            <button onClick={GoogleSignUp} >Ristrarse con Google</button>
+          <FontAwesomeIcon icon={faTimes} onClick={handleClose} />
+          <form onSubmit={EmailSignup} >
+            <h5>Sign Up with email:</h5>
+              <input 
+                type="email" 
+                name="email" 
+                id="email" 
+                placeholder="e-Mail ..." 
+                onChange={onChange}
+                value={email}
+                required 
+              />
+              <input 
+                type="password" 
+                name="password1" 
+                id="password1" 
+                placeholder="Password ..." 
+                onChange={onChange}
+                value={password1}
+                required 
+              />
+              <input 
+                type="password" 
+                name="password2" 
+                id="password2" 
+                placeholder="Repeat your password ..." 
+                onChange={onChange}
+                value={password2}
+                required 
+              />
+              <button type="submit">EMail Sign Up</button>
+            </form>
+            {
+              error && <p>*You must write the same password in both fields.</p>
+            }
+            <h5>Or ...</h5>
+            <button onClick={GoogleSignUp} >Restrarse con Google</button>
           </div>
         </SignupModalStyled>
       ) }

@@ -1,8 +1,8 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import styled from 'styled-components'
+import SignupModal from './signupModal'
 import { auth } from '../firebase'
-import firebase from 'firebase/app'
 
 const NavbarStyled = styled.nav`
   display: flex;
@@ -33,22 +33,23 @@ const NavbarStyled = styled.nav`
 `
 
 export const NavBar = () => {
+  const [showSignup, setshowSignup] = useState(false)
   const user = useSelector(state => state.user)
-
-  function signIn() {
-    var provider = new firebase.auth.GoogleAuthProvider()
-    auth.signInWithPopup(provider)
-  }
   
   function signOut() {
     auth.signOut()
   }
 
+  function toggleSignupModal() {
+    setshowSignup(!showSignup)
+  }
+
   return (
     <NavbarStyled>
       <img className='logo' src="/canasta.png" alt=""/>
+      <SignupModal showSignup={showSignup} handleClose={toggleSignupModal} />
       <ul>
-        { !user && <li onClick={signIn}>Sign in</li> }
+        { !user && <li onClick={toggleSignupModal}>Sign in</li> }
         { !user && <li>Log in</li> }
         { user && <li onClick={signOut}>log out</li> }
         <li><img className='profile' src={ user ? user.photoURL : '/profile_placeholder.png' } alt=""/></li>

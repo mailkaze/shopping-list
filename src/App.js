@@ -138,7 +138,7 @@ function App() {
   }, [columns])
 
   useEffect(() => {
-    if (user) console.log('user:', user.photoURL)
+    console.log('user:', user)
   }, [user])
 
   useEffect(() => {

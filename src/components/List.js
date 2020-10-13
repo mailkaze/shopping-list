@@ -5,16 +5,21 @@ import { Droppable } from 'react-beautiful-dnd'
 
 export const List = ({ marked, orderedElements }) => {
   const search = useSelector(state => state.search)
+  const user = useSelector(state => state.user)
   
   const filterSearch = () => {
-    // TODO: revisar qué pasa aquí:
-    orderedElements.map((o, index) => {if (o === undefined) {console.log('undefined en la lista ' + marked + ' con index ' + index)}})
-    if (search) {
-      return orderedElements.filter(e => 
-        e.name.toLowerCase().includes(search.toLowerCase().trim()))
-    } else {
-      return orderedElements
+    // mostramos sólo los elementos del usuario logeado:
+    if (user) {
+      orderedElements = orderedElements.filter(e => e.uid === user.uid)
+      // orderedElements.map((o, index) => {if (o === undefined) {console.log('undefined en la lista ' + marked + ' con index ' + index)}})
+      if (search) {
+        return orderedElements.filter(e => 
+          e.name.toLowerCase().includes(search.toLowerCase().trim()))
+      } else {
+        return orderedElements
+      }
     }
+    
   }
 
   return (

@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
+import { faGoogle, faFacebookF } from '@fortawesome/free-brands-svg-icons'
 import { auth } from '../firebase'
 import firebase from 'firebase/app'
 
@@ -32,8 +33,12 @@ const SignupModalStyled = styled.div`
     flex-direction: column;
     width: 80%;
   }
+  .equis {
+    float: right;
+    cursor: pointer;
+  }
   h5 {
-    margin: 0;
+    margin: 20px 0 0 0;
   }
   input {
     height: 1.8em;
@@ -75,7 +80,7 @@ export default function SignupModal({ handleClose, showSignup}) {
     }
   }
 
-  function EmailSignup(e) {
+  function emailSignup(e) {
     e.preventDefault()
     if (password1 === password2) {
     auth.createUserWithEmailAndPassword(email, password1)
@@ -91,7 +96,7 @@ export default function SignupModal({ handleClose, showSignup}) {
     }
   }
 
-  function GoogleSignUp() {
+  function googleSignUp() {
     var provider = new firebase.auth.GoogleAuthProvider()
     auth.signInWithPopup(provider)
     handleClose()
@@ -101,8 +106,8 @@ export default function SignupModal({ handleClose, showSignup}) {
       { showSignup && (
         <SignupModalStyled onClick={handleClose}>
           <div className="modal-main" onClick={(e) => e.stopPropagation()}>
-          <FontAwesomeIcon icon={faTimes} onClick={handleClose} />
-          <form onSubmit={EmailSignup} >
+          <FontAwesomeIcon className='equis' icon={faTimes} onClick={handleClose} />
+          <form onSubmit={emailSignup} >
             <h5>Sign Up with email:</h5>
               <input 
                 type="email" 
@@ -131,13 +136,15 @@ export default function SignupModal({ handleClose, showSignup}) {
                 value={password2}
                 required 
               />
-              <button type="submit">EMail Sign Up</button>
-            </form>
-            {
-              error && <p>*You must write the same password in both fields.</p>
+              <button type="submit">Regístrate con tu Email</button>
+              {
+              error && <p>*debes escribir el mismo password en ambos campos.</p>
             }
             <h5>Or ...</h5>
-            <button onClick={GoogleSignUp} >Restrarse con Google</button>
+            <button onClick={googleSignUp} ><FontAwesomeIcon icon={faGoogle} />   Regístrate con Google</button>
+            <button  ><FontAwesomeIcon icon={faFacebookF} />   Regístrate con Facebook</button>
+
+            </form>
           </div>
         </SignupModalStyled>
       ) }

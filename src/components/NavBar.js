@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux'
 import styled from 'styled-components'
 import SignupModal from './signupModal'
 import { auth } from '../firebase'
+import LoginModal from './loginModal'
 
 const NavbarStyled = styled.nav`
   display: flex;
@@ -33,7 +34,8 @@ const NavbarStyled = styled.nav`
 `
 
 export const NavBar = () => {
-  const [showSignup, setshowSignup] = useState(false)
+  const [showSignup, setShowSignup] = useState(false)
+  const [showLogin, setShowLogin] = useState(false)
   const user = useSelector(state => state.user)
   
   function signOut() {
@@ -41,16 +43,21 @@ export const NavBar = () => {
   }
 
   function toggleSignupModal() {
-    setshowSignup(!showSignup)
+    setShowSignup(!showSignup)
+  }
+
+  function toggleLoginModal() {
+    setShowLogin(!showLogin)
   }
 
   return (
     <NavbarStyled>
       <img className='logo' src="/canasta.png" alt=""/>
       <SignupModal showSignup={showSignup} handleClose={toggleSignupModal} />
+      <LoginModal showLogin={showLogin} handleClose={toggleLoginModal} />
       <ul>
         { !user && <li onClick={toggleSignupModal}>Sign in</li> }
-        { !user && <li>Log in</li> }
+        { !user && <li onClick={toggleLoginModal}>Log in</li> }
         { user && <li onClick={signOut}>log out</li> }
         <li><img className='profile' src={ user ? user.photoURL : '/profile_placeholder.png' } alt=""/></li>
       </ul>

@@ -49,11 +49,13 @@ const FormStyled = styled.form`
 export const Form = () => {
   const dispatch = useDispatch()
   const currentId = useSelector(state => state.currentId)
+  const user =  useSelector(state => state.user)
   const initialElement = {
     name: '',
     price: '',
     marked: false,
-    quantity: 1
+    quantity: 1,
+    uid: user.uid
   }
   const [element, setElement] = useState(initialElement)
 

@@ -21,9 +21,9 @@ function App() {
   const dispatch = useDispatch()
 
   const getElements = () => {
-    // Vamos a intentar hacer el trabajo local con la cache offline que crea Firestore:
-    // TODO: debería hacer su trabajo aunque no encuentre la colección o ésta esté vacía
-    db.collection("shoppingElements").onSnapshot((querySnapshot) => {
+    // Sólo se trae los elementos del usuario actual:
+    db.collection("shoppingElements").where("uid", "==", user.uid)
+    .onSnapshot((querySnapshot) => {
       const docs = []; 
       querySnapshot.forEach((doc) => {
         docs.push({ ...doc.data(), id: doc.id });
@@ -31,8 +31,8 @@ function App() {
       if (docs.length > 0) {
         dispatch(setElements(docs))
       }
-    });
-  };
+    })
+  }
 
   async function setListsOrder() {
     setTimeout(() => { // si no recibe nada en 3,5 segundos activa la funcionalidad de updateColumns
@@ -111,12 +111,6 @@ function App() {
   function authStateListener(){
     auth.onAuthStateChanged(function(userData) {
       dispatch(setUser(userData))
-
-      if (userData) {
-        // User is signed in.
-      } else {
-        // No user is signed in.
-      }
     })
   }
   
@@ -139,6 +133,11 @@ function App() {
 
   useEffect(() => {
     console.log('user:', user)
+    if (user) {
+      // Sólo cuando el usuario esté logueado traemos los datos:
+      getElements()
+      setListsOrder()
+    }
   }, [user])
 
   useEffect(() => {
@@ -149,13 +148,8 @@ function App() {
       cacheSizeBytes: db.CACHE_SIZE_UNLIMITED
     });
     db.enablePersistence()
-
     //Activamos el escuchador de cambios en el estado de autorizacion:
     authStateListener()
-    getElements()
-    setListsOrder()
-
-
   }, []);
 
   function onDragEnd(result) {
@@ -205,9 +199,9 @@ function App() {
             { !showForm && <AddButton /> }
           </DragDropContext>
         )
-        : <p className='login-message'>Sign in to start ;)</p>
+        : <p className='login-message'>Regístrate para empezar ;)</p>
       }
-      
+      <footer>By mailkaze</footer>
     </>
     
   );

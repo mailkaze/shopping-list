@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import { faGoogle, faFacebookF } from '@fortawesome/free-brands-svg-icons'
 import { auth } from '../firebase'
+import firebase from 'firebase/app'
 
 const LoginModalStyled = styled.div`
   position: fixed;
@@ -74,11 +75,18 @@ export default function LoginModal({ handleClose, showLogin }) {
   }
 
   function emailLogin(e) {
-
+    e.preventDefault()
+    auth.signInWithEmailAndPassword(email, password)
+    .catch(error => {
+      console.log(error.code, error.message)
+    })
+    handleClose()
   }
 
   function googleLogin() {
-
+    var provider = new firebase.auth.GoogleAuthProvider()
+    auth.signInWithPopup(provider)
+    handleClose()
   }
 
   return (
@@ -88,12 +96,12 @@ export default function LoginModal({ handleClose, showLogin }) {
           <div className="modal-main" onClick={(e) => e.stopPropagation()}>
               <FontAwesomeIcon className='equis' icon={faTimes} onClick={handleClose} />
               <form onSubmit={emailLogin} >
-                <h5>Login with email:</h5>
+                <h5>Entra con tu email:</h5>
                 <input 
                   type="email" 
                   name="email" 
                   id="email" 
-                  placeholder="e-Mail ..." 
+                  placeholder="E-mail ..." 
                   onChange={onChange}
                   value={email}
                   required 
@@ -101,14 +109,14 @@ export default function LoginModal({ handleClose, showLogin }) {
                 <input 
                   type="password" 
                   name="password" 
-                  id="password1" 
+                  id="password" 
                   placeholder="Password ..." 
                   onChange={onChange}
                   value={password}
                   required 
                 />
-                <button type="submit">Entra con tu Email</button>
-              <h5>Or ...</h5>
+                <button type="submit">Entrar con Email</button>
+              <h5>O también ...</h5>
               <button onClick={googleLogin} ><FontAwesomeIcon icon={faGoogle} />   Entra con Google</button>
               <button  ><FontAwesomeIcon icon={faFacebookF} />   Entra con Facebook</button>
             </form>

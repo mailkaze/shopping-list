@@ -108,12 +108,12 @@ export default function SignupModal({ handleClose, showSignup}) {
           <div className="modal-main" onClick={(e) => e.stopPropagation()}>
           <FontAwesomeIcon className='equis' icon={faTimes} onClick={handleClose} />
           <form onSubmit={emailSignup} >
-            <h5>Sign Up with email:</h5>
+            <h5>Regístrate con tu email:</h5>
               <input 
                 type="email" 
                 name="email" 
                 id="email" 
-                placeholder="e-Mail ..." 
+                placeholder="E-mail ..." 
                 onChange={onChange}
                 value={email}
                 required 
@@ -140,7 +140,7 @@ export default function SignupModal({ handleClose, showSignup}) {
               {
               error && <p>*debes escribir el mismo password en ambos campos.</p>
             }
-            <h5>Or ...</h5>
+            <h5>O también ...</h5>
             <button onClick={googleSignUp} ><FontAwesomeIcon icon={faGoogle} />   Regístrate con Google</button>
             <button  ><FontAwesomeIcon icon={faFacebookF} />   Regístrate con Facebook</button>
 

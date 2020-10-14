@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import styled from 'styled-components'
 import SignupModal from './signupModal'
@@ -36,6 +36,7 @@ const NavbarStyled = styled.nav`
 export const NavBar = () => {
   const [showSignup, setShowSignup] = useState(false)
   const [showLogin, setShowLogin] = useState(false)
+  const [profilePic, setProfilePic] = useState('/profile_placeholder.png')
   const user = useSelector(state => state.user)
   
   function signOut() {
@@ -50,16 +51,35 @@ export const NavBar = () => {
     setShowLogin(!showLogin)
   }
 
+    // function setProfilePic() {
+    //   if (user) {
+    //     if (user.photoURL) {
+    //       return user.photoURL
+    //     }
+    //   }
+    //   return '/profile_placeholder.png'
+    // }
+
+  useEffect(() => {
+    setProfilePic('/profile_placeholder.png')
+    if (user) {
+      if (user.photoURL) {
+        setProfilePic(user.photoURL)
+      }
+    }
+    
+  }, [user])
+
   return (
     <NavbarStyled>
       <img className='logo' src="/canasta.png" alt=""/>
       <SignupModal showSignup={showSignup} handleClose={toggleSignupModal} />
       <LoginModal showLogin={showLogin} handleClose={toggleLoginModal} />
       <ul>
-        { !user && <li onClick={toggleSignupModal}>Sign in</li> }
-        { !user && <li onClick={toggleLoginModal}>Log in</li> }
-        { user && <li onClick={signOut}>log out</li> }
-        <li><img className='profile' src={ user ? user.photoURL : '/profile_placeholder.png' } alt=""/></li>
+        { !user && <li onClick={toggleSignupModal}>Registrarse</li> }
+        { !user && <li onClick={toggleLoginModal}>Entrar</li> }
+        { user && <li onClick={signOut}>Salir</li> }
+        <li><img className='profile' src={profilePic} alt=""/></li>
       </ul>
     </NavbarStyled>
   )

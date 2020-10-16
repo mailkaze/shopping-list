@@ -34,43 +34,36 @@ function App() {
     })
   }
 
+  async function createColumns() {
+    // Crea el documento de columns para un usuario nuevo. Tiene algunas líneas extra para
+    // ayudar a recrearlas despues de un error en desarrollo
+    const elementIdsNoMarked = elements.filter(e => !e.marked).map(e => e.id)
+    const elementIdsMarked = elements.filter(e => e.marked).map(e => e.id)
+    console.log('Estos elementos entrarán en columns:', elements)
+    const columnNoMarked = {...columns["no-marked"], elementIds: elementIdsNoMarked}
+    const columnMarked = {...columns["marked"], elementIds: elementIdsMarked}
+    const newColumns = {...columns, "no-marked": columnNoMarked, "marked": columnMarked}
+    dispatch(setColumns(newColumns))
+    await db.collection('columns').doc(user.uid).set(newColumns)
+  }
+
   async function setListsOrder() {
-    setTimeout(() => { // si no recibe nada en 3,5 segundos activa la funcionalidad de updateColumns
+    // si no recibe nada en 2,5 segundos activa la funcionalidad de updateColumns
+    // para poder trabajar offline
+    setTimeout(() => { 
       setColsReceived(true)
-    }, 3500)
+    }, 2500)
     // traemos el orden de las listas de internet si se puede:
-    // TODO: debería hacer su trabajo aunque no encuentre columns o éste esté vacío
-    const noMarked = await db.collection('columns').doc('no-marked').get()
-    const marked = await db.collection('columns').doc('marked').get()
-
-    const tempColumns = {
-      "no-marked": {...noMarked.data()},
-      "marked": {...marked.data()}
-    }
+    const colsFromDB = await db.collection('columns').doc(user.uid).get()
     
-    // si el orden en Firebase no está vacío lo traemos al state:
-    if (tempColumns["no-marked"].elementIds.length > 0 && tempColumns["marked"].elementIds.length > 0) {
+    const tempColumns = colsFromDB.data()
+    if (tempColumns) {
       dispatch(setColumns(tempColumns))
-    } else { 
-      // si las listas están vacías las creamos desde cero:
-      // primero comprobamos que 'elements no esté vacío:
-      if (elements.length > 0) {
-        const elementIdsNoMarked = elements
-        .filter(e => !e.marked)
-        .map(e => e.id)
-
-        const elementIdsMarked = elements
-        .filter(e => e.marked)
-        .map(e => e.id)
-
-        const columnNoMarked = {...columns["no-marked"], elementIds: elementIdsNoMarked}
-        const columnMarked = {...columns["marked"], elementIds: elementIdsMarked}
-        const newColumns = {...columns, "no-marked": columnNoMarked, "marked": columnMarked}
-
-        dispatch(setColumns(newColumns))
-      }
-    } 
-    setColsReceived(true) //recibió las columnas del servidor y activa la funcionalidad de uptadeColumns
+    } else {
+      await createColumns()
+    }
+    //recibió las columnas del servidor y activa la funcionalidad de uptadeColumns
+    setColsReceived(true) 
   }
 
   function updateColumns() {
@@ -115,20 +108,14 @@ function App() {
   }
   
   useEffect(() => {
-    // Intentamos trabajar con la cache de Firestore, anulamos el localstorage: 
     updateColumns()
   }, [elements])
 
   useEffect(() => {
     // Cuando cambia 'columns' actualizamos su estado a firestore
-    // comprobamos que las listas no estén vacías:
     if (colsReceived) {
-      if (columns["no-marked"].elementIds.length > 0 && columns["marked"].elementIds.length > 0){
-        db.collection('columns').doc('no-marked').set(columns['no-marked'])
-        db.collection('columns').doc('marked').set(columns['marked'])
-      }
+      db.collection('columns').doc(user.uid).set(columns)
     }
-    
   }, [columns])
 
   useEffect(() => {
@@ -201,7 +188,7 @@ function App() {
         )
         : <p className='login-message'>Regístrate para empezar ;)</p>
       }
-      <footer>By mailkaze</footer>
+      <footer> <a href="https://github.com/mailkaze" target="_blank" rel="noopener noreferrer">By mailkaze</a> || v3.3</footer>
     </>
     
   );

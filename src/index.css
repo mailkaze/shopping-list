@@ -25,6 +25,16 @@ body {
     font-weight: 700;
 }
 
+footer {
+    margin-top: 5px;
+    text-align: center;
+}
+
+footer a {
+    text-decoration: none;
+    color: #14213d;
+}
+
 @media screen and (min-width: 500px) {
     .container {
         width: 80%;

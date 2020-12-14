@@ -8,10 +8,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 const FormStyled = styled.form`
   width: 80vw;
+  max-width: 500px;
   position: fixed;
   background: #fefae0;
-  left: 7vw;
   top: 20vh;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 8px;
   border-radius: 8px;
   box-shadow: 1px 1px 3px rgba(0,0,0,.6);
   .form-content {
@@ -31,7 +34,7 @@ const FormStyled = styled.form`
   }
   #name {
     width: 100%;
-    margin-bottom: 5px;
+    margin-bottom: 10px;
   }
   .down {
     width: 100%;
@@ -107,6 +110,7 @@ export const Form = () => {
           placeholder="Nombre ..."
           className="form-control"
           autoFocus
+          required
         />
         <div className="down">
           <input 
@@ -118,6 +122,7 @@ export const Form = () => {
             onChange={handleChange}
             value={element.price}
             placeholder="Precio ..."
+            required
           />
           <input 
             type="submit" 

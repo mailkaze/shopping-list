@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { db } from "../firebase";
 import styled from 'styled-components'
 import { useSelector, useDispatch } from 'react-redux'
-import { setShowForm, setCurrentId } from '../redux/actions'
+import { setShowForm, setCurrentId, setSearch } from '../redux/actions'
 import { editElement, deleteElement, setColumns } from '../redux/actions'
 import { faSquare } from '@fortawesome/free-regular-svg-icons'
 import { faCheck, faEllipsisV, faPen, faTrash } from '@fortawesome/free-solid-svg-icons'
@@ -82,6 +82,7 @@ export const Element = ({ element, index }) => {
 
   const toggleMarked = async (id) => {
     dispatch(editElement({...element, marked: !element.marked}))
+    dispatch(setSearch(''))
     const res = await db.collection("shoppingElements").doc(id).get();
     const data = res.data();
     await db.collection("shoppingElements").doc(id).update({ ...data, marked: !data.marked });

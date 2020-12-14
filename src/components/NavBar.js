@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import SignupModal from './signupModal'
 import { auth } from '../firebase'
 import LoginModal from './loginModal'
+import { Search } from './Search'
 
 const NavbarStyled = styled.nav`
   display: flex;
@@ -16,6 +17,7 @@ const NavbarStyled = styled.nav`
   ul {
     list-style: none;
     margin: 0;
+    padding: 0;
   }
   li {
     display: inline-block;
@@ -73,6 +75,7 @@ export const NavBar = () => {
   return (
     <NavbarStyled>
       <img className='logo' src="/canasta.png" alt=""/>
+      { user && <Search />}
       <SignupModal showSignup={showSignup} handleClose={toggleSignupModal} />
       <LoginModal showLogin={showLogin} handleClose={toggleLoginModal} />
       <ul>

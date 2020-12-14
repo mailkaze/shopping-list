@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import styled from 'styled-components'
 import { useSelector, useDispatch } from 'react-redux'
 import { setSearch } from '../redux/actions'
@@ -6,23 +6,15 @@ import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 const SearchStyled = styled.div`
-  position: relative;
-  width: 80%;
+  width: 58%;
   #search {
     width: 100%;
-    margin-top: 12px;
     border-style: none;
     padding: 4px 14px;
     font-size: 1em;
     border-radius: 18px;
-    height: 38px;
+    height: 34px;
     background: #fcc266;
-  }
-  .fa-times {
-    position: absolute;
-    top: 23px;
-    right: 11px;
-    cursor: pointer;
   }
 `
 
@@ -34,20 +26,19 @@ export const Search = () => {
     dispatch(setSearch(e.target.value))
   };
 
-  const clearSearch = () => {
-    dispatch(setSearch(''))
-  }
+  useEffect(() => {
+    console.log(`la búsqueda es ${search}`)
+  }, [search])
 
   return (
     <SearchStyled className="search">
       <input
         id="search"
-        type="text"
+        type="search"
         onChange={handleChange}
         placeholder="Buscar ..."
         value={search}
       />
-      {search && <FontAwesomeIcon icon={faTimes} onClick={clearSearch} />}
     </SearchStyled>
   );
 };

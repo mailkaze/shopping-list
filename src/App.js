@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { Search } from "./components/Search";
 import { List } from "./components/List";
 import { ShowControl } from "./components/ShowControl";
 import { Total } from "./components/Total";
@@ -172,7 +171,6 @@ function App() {
         user ? (
           <DragDropContext onDragEnd={onDragEnd} >
             <div className="container">
-              <Search />
               <Total />
               <List marked={false} 
                 orderedElements={ columns['no-marked'].elementIds.map(id => elements.filter(e => e.id === id)[0]) }
@@ -188,7 +186,7 @@ function App() {
         )
         : <p className='login-message'>Regístrate para empezar ;)</p>
       }
-      <footer> <a href="https://github.com/mailkaze" target="_blank" rel="noopener noreferrer">By mailkaze</a> || v3.3</footer>
+      <footer> <a href="https://github.com/mailkaze" target="_blank" rel="noopener noreferrer">By mailkaze</a> || v3.4</footer>
     </>
     
   );

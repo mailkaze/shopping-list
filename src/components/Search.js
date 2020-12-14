@@ -2,8 +2,6 @@ import React, {useEffect} from "react";
 import styled from 'styled-components'
 import { useSelector, useDispatch } from 'react-redux'
 import { setSearch } from '../redux/actions'
-import { faTimes } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 const SearchStyled = styled.div`
   width: 58%;
